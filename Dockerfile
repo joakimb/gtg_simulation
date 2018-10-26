@@ -43,6 +43,7 @@ RUN apt update && apt install libosgearth-dev -y
 ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
 RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
 
+ENV XDG_RUNTIME_DIR="/run/user/1000"
 #ENTRYPOINT [ "sh", "-c", "/omnet/omnetpp-5.4.1/bin/omnetpp" ]
 #CMD ["/omnet/omnetpp-5.4.1/bin/omnetpp" ]
 COPY ./docker-entrypoint.sh /
