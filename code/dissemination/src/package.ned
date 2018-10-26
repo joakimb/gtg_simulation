@@ -1,0 +1,3 @@
+package dissemination;
+
+@license(LGPL);

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!-- debug config -->
+<launch>
+	<copy file="loop50m.net.xml" />
+	<copy file="loop50m.rou.xml" />
+	<copy file="loop50m.settings.xml" />
+	<copy file="loop50m.add.xml" />
+	<copy file="loop50m.sumocfg" type="config" />
+</launch>

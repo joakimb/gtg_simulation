@@ -1,7 +1,30 @@
 #! /bin/bash
 
-echo $PATH
+#start sumo daemon
+/workspace/veins/sumo-launchd.py  -vv -c /usr/bin/sumo > /sumolog.txt 2>&1 &
 
-omnetpp
+#start omnet
+chown -R 1000:1000 /omnet
+#export DEFAULT_WORKSPACE_ARGS="‐vmargs ‐Dos‐gi.instance.area.default=/workspace"
 
-top -b
+if [ "$RUN_MODE" = "gui" ]
+then
+
+  omnetpp
+
+elif [ "$RUN_MODE" = "cmd" ]
+then
+
+  cd /workspace/dissemination/simulations
+  ../src/dissemination -m -u Cmdenv -n .:../src:../../veins/examples/veins:../../veins/src/veins --image-path=../../veins/images -l ../../veins/src/veins omnetpp.ini
+ 
+else
+
+  exit 3;
+
+fi
+
+#keep container alive
+while true; do echo "running container"; test $? -gt 128 && break; sleep 9; done
+
+

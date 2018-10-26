@@ -1,3 +1,0 @@
-docker build -t omsim .
-xhost +local:docker
-docker run --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" omsim

@@ -1,0 +1,12 @@
+# bug fixes
+
+https://github.com/burtonwilliamt/carlogicapi/issues/20
+
+# knowledge
+
+https://github.com/VeReMi-dataset/VeReMi-dataset.github.io
+https://github.com/karim-emara/PREXT
+https://stackoverflow.com/questions/46609196/building-my-own-veins-scenario
+https://stackoverflow.com/questions/46390016/how-to-getting-start-to-build-a-veins-application
+https://github.com/lcodeca/LuSTScenario
+https://www.its.dot.gov/itspac/october2012/PDF/data_availability.pdf

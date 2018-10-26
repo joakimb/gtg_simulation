@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- debug config -->
+<launch>
+	<basedir path="/workspace/dissemination/simulations/scenario/" />
+	
+	<copy file="lust.net.xml" />
+	<copy file="buslines.rou.xml" />
+	<copy file="local.0.rou.xml" />
+	<copy file="local.1.rou.xml" />
+	<copy file="local.2.rou.xml" />
+	<copy file="transit.rou.xml" />
+	<copy file="vtypes.add.xml" />
+	<copy file="busstops.add.xml" />
+	<copy file="e1detectors.add.xml" />
+	<copy file="lust.poly.xml" />
+	<copy file="tll.static.xml" />
+	<copy file="dua.static.sumocfg" type="config" />
+</launch>

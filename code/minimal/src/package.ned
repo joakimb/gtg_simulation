@@ -1,0 +1,3 @@
+package minimal;
+
+@license(LGPL);
