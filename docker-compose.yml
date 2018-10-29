@@ -1,0 +1,19 @@
+version: '3'
+services:
+  omnetpp:
+    build: .
+    #    networks:
+    #  hostnet: {}
+    network_mode: "host"
+    volumes:
+      - $HOME/.Xauthority:/root/.Xauthority:rw
+      - ./code:/workspace
+    cap_add:
+      - SYS_ADMIN
+    environment:
+      - DISPLAY
+
+        #networks:
+        #  hostnet:
+        #    external: true
+        #    name: host
