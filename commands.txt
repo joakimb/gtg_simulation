@@ -1,3 +1,4 @@
 docker build -t omsim .
 xhost +local:docker
-docker run --net=host --privileged --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" omsim
+docker run --net=host --cap-add SYS_ADMIN --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace omsim
+
