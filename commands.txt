@@ -1,6 +1,3 @@
 docker build -t omsim .
 xhost +local:docker
-docker run --net=host --cap-add SYS_ADMIN --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace omsim
-docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace omsim
-
-
+docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim
