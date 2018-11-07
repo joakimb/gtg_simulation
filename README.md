@@ -24,6 +24,9 @@ Then do as described for linux.
 
 ## Install guides 
 If you don't want to use the supplied docker container:
+
 https://omnetpp.org/doc/omnetpp/InstallGuide.pdf
+
 http://veins.car2x.org/tutorial/
+
 https://github.com/karim-emara/PREXT
