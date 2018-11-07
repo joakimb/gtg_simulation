@@ -2,8 +2,7 @@ version: '3'
 services:
   omnetpp:
     build: .
-    #    networks:
-    #  hostnet: {}
+    container_name: veins
     network_mode: "host"
     volumes:
       - $HOME/.Xauthority:/root/.Xauthority:rw
@@ -11,9 +10,4 @@ services:
     cap_add:
       - SYS_ADMIN
     environment:
-      - DISPLAY
-
-        #networks:
-        #  hostnet:
-        #    external: true
-        #    name: host
+      - DISPLAY=unix$DISPLAY
