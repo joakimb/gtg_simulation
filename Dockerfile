@@ -47,6 +47,10 @@ ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
 RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
 RUN apt update && apt install libdrm-dev -y
 
+#install eigen
+RUN apt update && apt install wget unzip -y
+RUN mkdir /eigen
+RUN cd /eigen && wget http://bitbucket.org/eigen/eigen/get/3.3.5.zip && unzip 3.3.5.zip && rm 3.3.5.zip
 
 #fixes for gui inside docker
 ENV XDG_RUNTIME_DIR="/run/user/1000"
