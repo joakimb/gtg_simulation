@@ -33,20 +33,20 @@ RUN apt update && apt install qt4-dev-tools -y
 #install sumo
 RUN apt-get install software-properties-common -y && add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-tools=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-doc=0.32.0+dfsg1+9+22~ubuntu16.04.1
 
-#install omnet
-
+#install dependencies and install omnet
 RUN mkdir /omnet
 COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
 RUN tar -xf /omnet/omnetpp-5.4.1-src-linux.tgz -C /omnet
 RUN rm /omnet/omnetpp-5.4.1-src-linux.tgz
 
-#install dependencies
 RUN apt update && apt install qt5-default -y
 RUN apt update && apt install libopenscenegraph-dev openscenegraph -y
 RUN add-apt-repository ppa:ubuntugis/ppa -y
 RUN apt update && apt install libosgearth-dev -y
 ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
 RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
+RUN apt update && apt install libdrm-dev -y
+
 
 #fixes for gui inside docker
 ENV XDG_RUNTIME_DIR="/run/user/1000"
