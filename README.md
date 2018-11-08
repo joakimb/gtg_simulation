@@ -22,6 +22,11 @@ When omnet opens, and you are prompted to select a workspace, select:
 Add build paths as described in https://github.com/karim-emara/PREXT 
     /eigen
     /workspace/veins-veins-4.7.1/src/veins/modules/Prext/include
+
+make clean
+
+build project
+
 [TODO make clearer how to]
 
 ### Windows and OSX
