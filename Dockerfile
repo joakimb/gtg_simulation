@@ -29,26 +29,31 @@ RUN apt update && apt install libfox-1.6-dev -y
 RUN apt update && apt install libgdal-dev -y
 RUN apt update && apt install libxerces-c-dev -y
 RUN apt update && apt install qt4-dev-tools -y
+RUN apt update && apt install qt5-default -y
+RUN apt update && apt install libopenscenegraph-dev openscenegraph -y
+RUN apt-get install software-properties-common -y 
+RUN add-apt-repository ppa:ubuntugis/ppa -y
+RUN apt update && apt install libosgearth-dev -y
+RUN apt update && apt install libdrm-dev -y
+RUN apt update && apt install wget unzip -y
 
 #install sumo
-RUN apt-get install software-properties-common -y && add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-tools=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-doc=0.32.0+dfsg1+9+22~ubuntu16.04.1
+RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-tools=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-doc=0.32.0+dfsg1+9+22~ubuntu16.04.1
 
-#install dependencies and install omnet
+
+#install omnet
 RUN mkdir /omnet
 COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
 RUN tar -xf /omnet/omnetpp-5.4.1-src-linux.tgz -C /omnet
 RUN rm /omnet/omnetpp-5.4.1-src-linux.tgz
-
-RUN apt update && apt install qt5-default -y
-RUN apt update && apt install libopenscenegraph-dev openscenegraph -y
-RUN add-apt-repository ppa:ubuntugis/ppa -y
-RUN apt update && apt install libosgearth-dev -y
 ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
+#begin ugly workaround for verison conflict, basically import cxmlelement->tostr from omnet 5.0 to 5.4.1 (https://groups.google.com/forum/#!topic/omnetpp/6iZhpyg9vlQ)
+COPY ./cxmlelement.h /omnet/omnetpp-5.4.1/include/omnetpp/cxmlelement.h
+COPY ./cxmlelement.cc /omnet/omnetpp-5.4.1/src/sim/cxmlelement.cc
+# end workaround
 RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
-RUN apt update && apt install libdrm-dev -y
 
 #install eigen
-RUN apt update && apt install wget unzip -y
 RUN mkdir /eigen
 RUN cd /eigen && wget http://bitbucket.org/eigen/eigen/get/3.3.5.zip && unzip 3.3.5.zip && rm 3.3.5.zip
 
