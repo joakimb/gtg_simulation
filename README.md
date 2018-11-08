@@ -16,6 +16,14 @@ https://omnetpp.org/omnetpp/download/30-omnet-releases/2331-omnetpp-5-4-1-linux
     xhost +local:docker
     docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim
 
+When omnet opens, and you are prompted to select a workspace, select:
+    /workspace
+
+Add build paths as described in https://github.com/karim-emara/PREXT 
+    /eigen
+    /workspace/veins-veins-4.7.1/src/veins/modules/Prext/include
+[TODO make clearer how to]
+
 ### Windows and OSX
 Configure an X server as described in:
 http://somatorio.org/en/post/running-gui-apps-with-docker/
