@@ -37,10 +37,6 @@ RUN apt update && apt install libosgearth-dev -y
 RUN apt update && apt install libdrm-dev -y
 RUN apt update && apt install wget unzip -y
 
-#install sumo
-RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-tools=0.32.0+dfsg1+9+22~ubuntu16.04.1 sumo-doc=0.32.0+dfsg1+9+22~ubuntu16.04.1
-
-
 #install omnet
 RUN mkdir /omnet
 COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
@@ -52,6 +48,9 @@ COPY ./cxmlelement.h /omnet/omnetpp-5.4.1/include/omnetpp/cxmlelement.h
 COPY ./cxmlelement.cc /omnet/omnetpp-5.4.1/src/sim/cxmlelement.cc
 # end workaround
 RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
+
+#install sumo
+RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.25.0+dfsg1-2 sumo-tools=0.25.0+dfsg1-2 sumo-doc=0.25.0+dfsg1-2
 
 #install eigen
 RUN mkdir /eigen
