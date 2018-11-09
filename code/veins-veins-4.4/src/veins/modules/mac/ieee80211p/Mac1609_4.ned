@@ -49,8 +49,10 @@ simple Mac1609_4 extends BaseMacLayer
         // length of MAC header, header is already added at 1609_4
         headerLength @unit(bit) = default(0 bit);
 
+        // patched according to (https://github.com/sommer/veins/commit/493f8a3f514bd8ffd7fb5d9666a952a4446ab177 and https://stackoverflow.com/questions/49967052/error-while-running-example-of-the-veins-in-the-last-step-of-the-installation?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)
         // bit rate 
-        double bitrate @unit(bps) = default(18 Mbps);
+        //double bitrate @unit(bps) = default(18 Mbps);
+        int bitrate @unit(bps) = default(18 Mbps);
 
         // little asynchronization between cars
         double syncOffset @unit(s) = default(0.0003s);
