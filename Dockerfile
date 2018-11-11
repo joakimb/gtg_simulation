@@ -36,18 +36,19 @@ RUN add-apt-repository ppa:ubuntugis/ppa -y
 RUN apt update && apt install libosgearth-dev -y
 RUN apt update && apt install libdrm-dev -y
 RUN apt update && apt install wget unzip -y
+RUN apt update && apt install xvfb -y #fake x server to circumvent config warning
 
-#install omnet
+#fake display to circumvent config warning
+ENV DISPLAY=:99 
+
+#install omnet 5.0
 RUN mkdir /omnet
-COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
-RUN tar -xf /omnet/omnetpp-5.4.1-src-linux.tgz -C /omnet
-RUN rm /omnet/omnetpp-5.4.1-src-linux.tgz
-ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
-#begin ugly workaround for verison conflict, basically import cxmlelement->tostr from omnet 5.0 to 5.4.1 (https://groups.google.com/forum/#!topic/omnetpp/6iZhpyg9vlQ)
-COPY ./cxmlelement.h /omnet/omnetpp-5.4.1/include/omnetpp/cxmlelement.h
-COPY ./cxmlelement.cc /omnet/omnetpp-5.4.1/src/sim/cxmlelement.cc
-# end workaround
-RUN cd /omnet/omnetpp-5.4.1 && ./configure && make
+COPY ./omnetpp-5.0-src.tgz /omnet
+RUN tar -xf /omnet/omnetpp-5.0-src.tgz -C /omnet
+RUN rm /omnet/omnetpp-5.0-src.tgz
+ENV PATH="/omnet/omnetpp-5.0/bin:${PATH}"
+RUN Xvfb :99 -screen 0 640x480x8 -nolisten tcp &\
+   cd /omnet/omnetpp-5.0 && ./configure && make
 
 #install sumo
 RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.25.0+dfsg1-2 sumo-tools=0.25.0+dfsg1-2 sumo-doc=0.25.0+dfsg1-2
