@@ -8,11 +8,8 @@
 					<builder id="org.omnetpp.cdt.gnu.builder.debug.863134242" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="OMNeT++ Make Builder (opp_makemake)" superClass="org.omnetpp.cdt.gnu.builder.debug"/>
 					<tool id="cdt.managedbuild.tool.gnu.archiver.base.752652679" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 					<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1394815730" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-						<option id="gnu.cpp.compiler.option.include.paths.1086707691" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+						<option id="gnu.cpp.compiler.option.include.paths.1086707691" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 							<listOptionValue builtIn="false" value="${ProjDirPath}/src"/>
-							<listOptionValue builtIn="false" value="/eigen/eigen-eigen-b3f3d4950030"/>
-							<listOptionValue builtIn="false" value="/omnet/omnetpp-5.4.1/include/omnetpp"/>
-							<listOptionValue builtIn="false" value="/workspace/veins/src/veins/modules/Prext/include"/>
 						</option>
 						<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1502874793" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 					</tool>
@@ -21,9 +18,6 @@
 					</tool>
 					<tool id="cdt.managedbuild.tool.gnu.c.linker.base.548956838" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 					<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1144143612" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-						<option id="gnu.cpp.link.option.paths.391767645" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-							<listOptionValue builtIn="false" value="&quot;${workspace_loc:/veins/src/veins/modules/Prext/lib}&quot;"/>
-						</option>
 						<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1493662456" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 							<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 							<additionalInput kind="additionalinput" paths="$(LIBS)"/>

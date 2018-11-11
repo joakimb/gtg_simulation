@@ -8,22 +8,16 @@
 					<builder id="org.omnetpp.cdt.gnu.builder.release.1123304671" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="OMNeT++ Make Builder (opp_makemake)" superClass="org.omnetpp.cdt.gnu.builder.release"/>
 					<tool id="cdt.managedbuild.tool.gnu.archiver.base.1766233812" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 					<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.7659449" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-						<option id="gnu.cpp.compiler.option.include.paths.1086707691" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-							<listOptionValue builtIn="false" value="${ProjDirPath}/src"/>
-							<listOptionValue builtIn="false" value="/eigen/eigen-eigen-b3f3d4950030"/>
-							<listOptionValue builtIn="false" value="/omnet/omnetpp-5.4.1/include/omnetpp"/>
-							<listOptionValue builtIn="false" value="/workspace/veins/src/veins/modules/Prext/include"/>
-						</option>
 						<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.793944766" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+						<option id="gnu.cpp.compiler.option.include.paths.1086707691" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+							<listOptionValue builtIn="false" value="${ProjDirPath}/src"/>
+						</option>
 					</tool>
 					<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.800196717" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 						<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.416533497" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 					</tool>
 					<tool id="cdt.managedbuild.tool.gnu.c.linker.base.33157182" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.base"/>
 					<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1823595887" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
-						<option id="gnu.cpp.link.option.paths.541364632" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
-							<listOptionValue builtIn="false" value="/workspace/veins/src/veins/modules/Prext/lib"/>
-						</option>
 						<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1438656455" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 							<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 							<additionalInput kind="additionalinput" paths="$(LIBS)"/>
