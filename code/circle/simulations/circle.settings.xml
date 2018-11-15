@@ -1,0 +1,5 @@
+<!-- filename: circle.settings.xml -->
+<viewsettings>
+    <viewport y="0" x="200" zoom="100"/>
+    <delay value="100"/>
+</viewsettings>
