@@ -60,6 +60,9 @@ RUN cd /eigen && wget http://bitbucket.org/eigen/eigen/get/3.3.5.zip && unzip 3.
 #fixes for gui inside docker
 ENV XDG_RUNTIME_DIR="/run/user/1000"
 
+#install dependencies for debug
+RUN apt update && apt install gdb -y
+
 #runscript that starts omnet
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT [ "/bin/bash", "/docker-entrypoint.sh" ]
