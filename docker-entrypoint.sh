@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #start sumo daemon
-/workspace/veins/sumo-launchd.py  -vv -c /usr/bin/sumo &
+/workspace/veins/sumo-launchd.py  -vv -c /usr/bin/sumo > /sumolog.txt 2>&1 &
 
 #start omnet
 chown -R 1000:1000 /omnet
