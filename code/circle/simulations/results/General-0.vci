@@ -1,0 +1,60 @@
+                                                                
+version 2
+run General-0-20181119-09:36:52-2359
+attr configname General
+attr datetime 20181119-09:36:52
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvars2 $repetition=0
+attr measurement ""
+attr network circle.CircleScenario
+attr processid 2359
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+param **.coreDebug true
+param **.debug true
+param *.**.nic.mac1609_4.bitrate 18Mbps
+param *.**.nic.mac1609_4.txPower 20mW
+param *.**.nic.phy80211p.analogueModels "xmldoc(\"config.xml\")"
+param *.**.nic.phy80211p.decider "xmldoc(\"config.xml\")"
+param *.**.nic.phy80211p.sensitivity -89dBm
+param *.**.nic.phy80211p.thermalNoise -110dBm
+param *.**.nic.phy80211p.usePropagationDelay true
+param *.**.nic.phy80211p.useThermalNoise true
+param *.connectionManager.alpha 2.0
+param *.connectionManager.carrierFrequency "5.890e9 Hz"
+param *.connectionManager.pMax 20mW
+param *.connectionManager.sat -89dBm
+param *.connectionManager.sendDirect true
+param *.manager.autoShutdown false
+param *.manager.host "\"localhost\""
+param *.manager.launchConfig "xmldoc(\"circle.launchd.xml\")"
+param *.manager.moduleDisplayString "\"\""
+param *.manager.moduleName "\"node\""
+param *.manager.moduleType "\"org.car2x.veins.nodes.Car\""
+param *.manager.port 9999
+param *.manager.updateInterval 0.1s
+param *.node[*].applType "\"circle.CircleAppl\""
+param *.node[*].nicType "\"Nic80211p\""
+param *.node[*].veinsmobility.x 0
+param *.node[*].veinsmobility.y 0
+param *.node[*].veinsmobility.z 0
+param *.node[*].veinsmobilityType "\"org.car2x.veins.modules.mobility.traci.TraCIMobility\""
+param *.playgroundSizeX 1000m
+param *.playgroundSizeY 1000m
+param *.playgroundSizeZ 50m
+
+vector 2  CircleScenario.node[0].veinsmobility  posx  ETV
+vector 3  CircleScenario.node[0].veinsmobility  posy  ETV
+vector 4  CircleScenario.node[0].veinsmobility  speed  ETV
+vector 5  CircleScenario.node[0].veinsmobility  acceleration  ETV
+vector 6  CircleScenario.node[0].veinsmobility  co2emission  ETV
+6	2029 13385 107 1589 10.3 59.7 495 1.167848739031 5.3785304753267 1167.5484520676 3098.0756043963
+5	15414 6552 107 1589 10.3 59.7 495 0 1 138 138
+4	21966 7910 104 1589 10.2 59.7 496 0.1 13.9 5935.3 78024.87
+3	29876 9537 102 1589 10.1 59.7 497 26.65 226.57220607606 54366.26956108 8627425.1310722
+2	39413 9330 102 1589 10.1 59.7 497 26.65 224.40544253242 55537.404542643 10013726.77309
