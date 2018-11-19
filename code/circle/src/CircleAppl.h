@@ -9,7 +9,7 @@
 
 using Veins::TraCIMobility;
 using Veins::TraCICommandInterface;
-//using Veins::AnnotationManager; //add for annotations
+using Veins::AnnotationManager; //add for annotations
 
 class CircleAppl : public BaseWaveApplLayer {
     public:

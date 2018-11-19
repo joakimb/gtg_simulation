@@ -1,9 +1,0 @@
-<!-- filename: circle.nod.xml -->
-<nodes>
-    <node id="1" x="-100.0" y="-100.0" />
-    <node id="2" x="-100.0" y="+100.0" />
-    <node id="3" x="+100.0" y="+100.0" />
-    <node id="4" x="+100.0" y="-100.0" />
-    <node id="5" x="+101.0" y="-100.0" />
-</nodes>
-
