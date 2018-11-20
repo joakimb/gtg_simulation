@@ -27,8 +27,8 @@ void CircleAppl::receiveSignal(cComponent* source, simsignal_t signalID, cObject
 
 void CircleAppl::onData(WaveShortMessage* wsm) {
     //Receive a message with a target speed, slow down to that speed
-    //float message_speed = atof(wsm->getWsmData());
-    //traciVehicle->slowDown(message_speed, 1000); //slow down over 1s
+    float message_speed = atof(wsm->getWsmData());
+    traciVehicle->slowDown(message_speed, 1000); //slow down over 1s
 }
 
 void CircleAppl::onBeacon(WaveShortMessage* wsm) {
@@ -37,21 +37,22 @@ void CircleAppl::onBeacon(WaveShortMessage* wsm) {
 void CircleAppl::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
 
-    //sends message every 5 seconds
-    //if (simTime() - lastSent >= 5) {
-        //std::string message = std::to_string(mobility->getSpeed());
-        //sendMessage(message);
-        //lastSent = simTime();
-    //}
+    //sends message every 0.1 seconds
+    if (simTime() - lastSent >= 0.1) {
+        std::string message = std::to_string(mobility->getSpeed());
+        sendMessage(message);
+        lastSent = simTime();
+    }
 }
 
 void CircleAppl::sendWSM(WaveShortMessage* wsm) {
-    //sendDelayedDown(wsm, 1000); //message delay
+    sendDelayedDown(wsm, 1000); //message delay
 }
 
 void CircleAppl::sendMessage(std::string msg) {
-    //t_channel channel = dataOnSch ? type_SCH : type_CCH;
-    //WaveShortMessage *wsm = new WaveShortMessage("data", channel);
-    //wsm->setWsmData(msg.c_str());
-    //sendWSM(wsm);
+    EV_TRACE << "sending CAM: " << msg << endl;
+    t_channel channel = dataOnSch ? type_SCH : type_CCH;
+    WaveShortMessage *wsm = new WaveShortMessage("data", channel);
+    wsm->setWsmData(msg.c_str());
+    sendWSM(wsm);
 }
