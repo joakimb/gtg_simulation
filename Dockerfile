@@ -43,12 +43,14 @@ ENV DISPLAY=:99
 
 #install omnet 5.0
 RUN mkdir /omnet
-COPY ./omnetpp-5.0-src.tgz /omnet
-RUN tar -xf /omnet/omnetpp-5.0-src.tgz -C /omnet
-RUN rm /omnet/omnetpp-5.0-src.tgz
-ENV PATH="/omnet/omnetpp-5.0/bin:${PATH}"
+COPY ./omnetpp-5.2-src-linux.tgz /omnet
+RUN tar -xf /omnet/omnetpp-5.2-src-linux.tgz -C /omnet
+RUN rm /omnet/omnetpp-5.2-src-linux.tgz
+ENV PATH="/omnet/omnetpp-5.2/bin:${PATH}"
+#RUN Xvfb :99 -screen 0 640x480x8 -nolisten tcp &\
+ #  cd /omnet/omnetpp-5.0 && ./configure && make
 RUN Xvfb :99 -screen 0 640x480x8 -nolisten tcp &\
-   cd /omnet/omnetpp-5.0 && ./configure && make
+    cd /omnet/omnetpp-5.2 && ./configure && make
 
 #install sumo
 RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.25.0+dfsg1-2 sumo-tools=0.25.0+dfsg1-2 sumo-doc=0.25.0+dfsg1-2
@@ -62,6 +64,46 @@ ENV XDG_RUNTIME_DIR="/run/user/1000"
 
 #install dependencies for debug
 RUN apt update && apt install gdb -y
+
+#install artery
+#RUN apt update && apt install cmake -y
+#RUN apt update && apt install libboost-all-dev -y
+#RUN apt update && apt install libcrypto++-dev -y
+RUN apt update && apt install git -y
+RUN apt update && apt install geographiclib-tools -y
+RUN apt update && apt install libgeographic14 -y
+RUN apt update && apt install libgeographic-dev -y
+#RUN echo -e "\n\n\n" | ssh-keygen -t rsa
+
+RUN git clone --recursive https://github.com/riebl/artery.git
+
+#install boost
+RUN apt update && apt install wget -y
+RUN wget https://dl.bintray.com/boostorg/release/1.64.0/source/boost_1_64_0.tar.gz
+RUN tar xf boost_1_64_0.tar.gz
+RUN apt update && apt install g++ -y
+RUN apt update && apt install python python-dev -y
+RUN cd boost_1_64_0 && ./bootstrap.sh --prefix=/usr/local # --with-libraries=atomic,chrono,container,context,coroutine,coroutine2,date_time,exception,fiber,filesystem,graph,graph_parallel,iostreams,locale,log,math,metaparse,mpi,program_options,python,random,regex,serialization,signals,system,test,thread,timer,type_erasure,wave 
+RUN cd /boost_1_64_0 && ./b2 install --debug-configuration -d+2 -q
+
+RUN rm -rf boost_1_64_0
+RUN rm boost_1_64_0.tar.gz
+
+##install cmake
+RUN wget https://cmake.org/files/v3.13/cmake-3.13.0-Linux-x86_64.tar.gz
+RUN tar xf cmake-3.13.0-Linux-x86_64.tar.gz
+RUN cd cmake-3.13.0-Linux-x86_64 && cp -r bin /usr/ && cp -r share /usr/ && cp -r doc /usr/share/ && cp -r man /usr/share/
+
+##install crypto++
+RUN apt update && apt install libcrypto++-dev -y
+
+#install artery
+RUN cd artery/extern/vanetza && mkdir build && cd build && BOOST_ROOT="" BOOST_INCLUDEDIR="/usr/local" cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBoost_DEBUG=ON ..
+RUN cd /artery && make all
+RUN cd /artery && mkdir build && cd build && cmake .. 
+RUN ls -la /artery
+RUN cd /artery/build && cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON .. &&  cmake --build .
+
 
 #runscript that starts omnet
 COPY ./docker-entrypoint.sh /

@@ -1,0 +1,3 @@
+[submodule "code/artery"]
+	path = code/artery
+	url = git@github.com:riebl/artery.git
