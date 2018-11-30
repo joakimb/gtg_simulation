@@ -29,7 +29,15 @@ build project
 
 [TODO make clearer how to]
 
-### Windows and OSX
+### OSX
+Install xquarts, then:
+
+    docker build -t omsim .
+    /opt/X11/bin/xhost + $ip
+    xhost + $ip
+    docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$ip:0 --volume="/tmp/.X11-unix:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim       \n
+
+### Windows
 Configure an X server as described in:
 http://somatorio.org/en/post/running-gui-apps-with-docker/
 
