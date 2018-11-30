@@ -41,15 +41,6 @@ RUN apt update && apt install xvfb -y #fake x server to circumvent config warnin
 #fake display to circumvent config warning
 ENV DISPLAY=:99 
 
-##install omnet 5.2
-#RUN mkdir /omnet
-#COPY ./omnetpp-5.2-src-linux.tgz /omnet
-#RUN tar -xf /omnet/omnetpp-5.2-src-linux.tgz -C /omnet
-#RUN rm /omnet/omnetpp-5.2-src-linux.tgz
-#ENV PATH="/omnet/omnetpp-5.2/bin:${PATH}"
-#RUN Xvfb :99 -screen 0 640x480x8 -nolisten tcp &\
-#    cd /omnet/omnetpp-5.2 && ./configure && make
-
 #install omnet 5.4.1
 RUN mkdir /omnet
 COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
@@ -60,7 +51,6 @@ RUN Xvfb :99 -screen 0 640x480x8 -nolisten tcp &\
     cd /omnet/omnetpp-5.4.1 && ./configure && make
 
 #install sumo
-#RUN add-apt-repository -y ppa:sumo/stable && apt update && apt install -y sumo=0.25.0+dfsg1-2 sumo-tools=0.25.0+dfsg1-2 sumo-doc=0.25.0+dfsg1-2
 RUN apt update && apt install -y sumo sumo-tools sumo-doc
 
 #install eigen
@@ -109,10 +99,6 @@ RUN cd /artery && make all
 RUN cd /artery && mkdir build && cd build && cmake .. 
 RUN ls -la /artery
 RUN cd /artery/build && cmake .. &&  cmake --build .
-#ENV DISPLAY=:98 
-#RUN Xvfb :98 -screen 0 640x480x8 -nolisten tcp &\
-#RUN cd artery/build && cmake --build . --target run_example -j 5
-
 
 #runscript that starts omnet
 COPY ./docker-entrypoint.sh /
