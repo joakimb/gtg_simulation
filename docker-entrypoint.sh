@@ -15,7 +15,14 @@ then
 elif [ "$RUN_MODE" = "cmd" ]
 then
 
+  #build project
+  cd workspace/veins
+  ./configure
+  make
+  cd /workspace/dissemination
+  make
   cd /workspace/dissemination/simulations
+  #run it
   ../src/dissemination -m -u Cmdenv -n .:../src:../../veins/examples/veins:../../veins/src/veins --image-path=../../veins/images -l ../../veins/src/veins omnetpp.ini
  
 else
