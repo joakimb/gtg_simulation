@@ -24,7 +24,7 @@ public:
     void deleteExpired(omnetpp::simtime_t time);
 private:
     int memSize;
-    omnetpp::simtime_t cutOff = 20;
+    omnetpp::simtime_t cutOff = 1; //forget neighbours after one second
     std::list<neighbour_node> neighbours;
     void deleteDuplicates(int id);
 };
