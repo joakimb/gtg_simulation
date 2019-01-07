@@ -23,7 +23,7 @@ then
   make
   cd /workspace/dissemination/simulations
   #run it
-  ../src/dissemination -m -u Cmdenv -n .:../src:../../veins/examples/veins:../../veins/src/veins --image-path=../../veins/images -l ../../veins/src/veins omnetpp.ini
+  ../src/dissemination -m -u Cmdenv -n .:../src:../../veins/examples/veins:../../veins/src/veins --image-path=../../veins/images -l ../../veins/src/veins -c lust omnetpp.ini
  
 else
 
