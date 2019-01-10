@@ -23,6 +23,7 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 #include "NeighbourMemory.h"
+#include <stack>
 
 class DisseminationVehicle : public BaseWaveApplLayer {
 	public:
@@ -36,11 +37,14 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         virtual void handleSelfMsg(cMessage* msg);
 		virtual void handlePositionUpdate(cObject* obj);
 	private:
+		//std::stack<string> pseudonyms;
 		void sendShares();
 		simtime_t sentForEpoch = -1;
 		const int PSEUD_PERIOD = 10;
-        NeighbourMemory neighbours{3};
+        std::unique_ptr<NeighbourMemory> neighbours;
         simsignal_t sendSharesSignal;
+        simtime_t cutOff;
+
 };
 
 #endif

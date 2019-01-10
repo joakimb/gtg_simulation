@@ -18,13 +18,13 @@ struct neighbour_node {
 //keeps track of latest sightings of closest neighbours
 class NeighbourMemory {
 public:
-    NeighbourMemory(int memSize);
+    NeighbourMemory(omnetpp::simtime_t cutOff);
     void newNeighbour(int id, omnetpp::simtime_t time);
     std::vector<int> getNeighbours() const;
     void deleteExpired(omnetpp::simtime_t time);
 private:
     int memSize;
-    omnetpp::simtime_t cutOff = 1; //forget neighbours after one second
+    omnetpp::simtime_t cutOff; //forget neighbours after defined time (in omnetpp.ini)
     std::list<neighbour_node> neighbours;
     void deleteDuplicates(int id);
 };

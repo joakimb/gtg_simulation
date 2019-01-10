@@ -15,9 +15,8 @@ using omnetpp::simtime_t;
 using std::vector;
 using std::list;
 
-NeighbourMemory::NeighbourMemory(int memSize) :
-    memSize    (memSize),
-    //oldest     (0),
+NeighbourMemory::NeighbourMemory(simtime_t cutOff) :
+    cutOff(cutOff),
     neighbours () {
 }
 

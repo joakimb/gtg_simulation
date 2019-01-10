@@ -35,6 +35,8 @@ void DisseminationVehicle::initialize(int stage) {
     }
     sendSharesSignal = registerSignal("sendshares");
 
+    cutOff = par("cutOff").intValue();
+    neighbours.reset(new NeighbourMemory(cutOff));
 }
 
 void DisseminationVehicle::onWSA(WaveServiceAdvertisment* wsa) {
@@ -49,8 +51,9 @@ void DisseminationVehicle::onWSM(WaveShortMessage* wsm) {
 void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
     int me = getId() - 1;
     int sender = bsm->getSenderAddress();
-    neighbours.newNeighbour(sender, simTime());
-    vector<int> current_neighbours = neighbours.getNeighbours();
+    assert(neighbours);
+    neighbours->newNeighbour(sender, simTime());
+    vector<int> current_neighbours = neighbours->getNeighbours();
 
     std::stringstream result;
     std::copy(current_neighbours.begin(), current_neighbours.end(), std::ostream_iterator<int>(result, " : "));
@@ -88,7 +91,8 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
     }
 
     //record statistics
-    neighbours.deleteExpired(simTime());
-    emit(sendSharesSignal, neighbours.getNeighbours().size());
+    assert(neighbours);
+    neighbours->deleteExpired(simTime());
+    emit(sendSharesSignal, neighbours->getNeighbours().size());
 
 }

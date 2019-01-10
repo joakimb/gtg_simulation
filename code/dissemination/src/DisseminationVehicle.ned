@@ -27,5 +27,7 @@ simple DisseminationVehicle extends BaseWaveApplLayer
     @signal[sendshares](type="unsigned long");
     @statistic[neighbours](title="neighbour count"; source="sendshares"; record=vector,stats; interpolationmode=none);
     
+    //parameters:
+    int cutOff;
     //@display("i=block/app2");
 }
