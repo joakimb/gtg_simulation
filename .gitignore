@@ -7,6 +7,8 @@ code/minimal/simulations/results/*
 code/minimal/out
 code/dissemination/simulations/results/*
 code/dissemination/out
+code/dissemination/simulations/core
+code/dissemination/simulations/.cmdenv-log
 
 *.anf
 
