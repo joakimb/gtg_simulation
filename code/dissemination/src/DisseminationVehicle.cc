@@ -23,6 +23,7 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
+#include "Token.h"
 
 using std::vector;
 
@@ -36,6 +37,7 @@ void DisseminationVehicle::initialize(int stage) {
     sendSharesSignal = registerSignal("sendshares");
 
     cutOff = par("cutOff").intValue();
+    pseudPeriod = par("pseudPeriod").intValue();
     neighbours.reset(new NeighbourMemory(cutOff));
 }
 
@@ -82,13 +84,21 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
 
     //send shares if needed
-    simtime_t currentEpoch = simTime() / PSEUD_PERIOD;
+    simtime_t currentEpoch = simTime() / pseudPeriod;
     //have we disseminated shares for this epoch?
     if (currentEpoch > sentForEpoch) {
 
         //sendShares();
 
     }
+
+//    Token token{Token::genRandomPseud(), 5,4};
+//
+//    for (int i = 0; i < 5; i++){
+//
+//        std::cout << "share: " << token.getNextShare().data() << "\n";
+//
+//    }
 
     //record statistics
     assert(neighbours);

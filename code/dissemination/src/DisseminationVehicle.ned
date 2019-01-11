@@ -29,5 +29,6 @@ simple DisseminationVehicle extends BaseWaveApplLayer
     
     //parameters:
     int cutOff;
+    int pseudPeriod;
     //@display("i=block/app2");
 }

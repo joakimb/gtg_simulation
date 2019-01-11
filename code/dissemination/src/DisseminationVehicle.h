@@ -40,7 +40,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 		//std::stack<string> pseudonyms;
 		void sendShares();
 		simtime_t sentForEpoch = -1;
-		const int PSEUD_PERIOD = 10;
+		simtime_t pseudPeriod;
         std::unique_ptr<NeighbourMemory> neighbours;
         simsignal_t sendSharesSignal;
         simtime_t cutOff;
