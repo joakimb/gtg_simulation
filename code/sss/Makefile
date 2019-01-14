@@ -7,11 +7,12 @@ OBJS := ${SRCS:.c=.o}
 
 all: libsss.a
 
-libsss.a: randombytes/librandombytes.a $(OBJS)
+#libsss.a: randombytes/librandombytes.a $(OBJS)
+libsss.a: $(OBJS)
 	$(AR) -rcs libsss.a $^
 
-randombytes/librandombytes.a:
-	$(MAKE) -C randombytes librandombytes.a
+#randombytes/librandombytes.a:
+#	$(MAKE) -C randombytes librandombytes.a
 
 # Force unrolling loops on hazmat.c
 hazmat.o: CFLAGS += -funroll-loops
