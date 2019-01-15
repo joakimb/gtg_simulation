@@ -43,9 +43,17 @@ void DisseminationVehicle::initialize(int stage) {
 
     //initialize neighbour memory
     neighbours.reset(new NeighbourMemory(cutOff));
+
     //initialize token in progress for dissemination
     const std::vector<uint8_t> ltid = intToArr(getId() - 1);
     disseminating.reset(new Token(ltid, numShares, numReconstruct));
+
+    //init pseudonyms
+    for (int i = 0; i < 1000; i++){
+        pseudonyms.push(PseudCred());
+        //std::string x = pseudonyms.front().getPubKey();
+        //std::cout << "len: " << x.length() << "str: " << x << endl;
+    }
 }
 
 void DisseminationVehicle::onWSA(WaveServiceAdvertisment* wsa) {

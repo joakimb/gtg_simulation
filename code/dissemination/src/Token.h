@@ -6,7 +6,6 @@
 #include <vector>
 extern "C" {
     #include <sss.h>
-    #include <randombytes.h>
 }
 
 typedef std::array<uint8_t, sizeof(sss_Share)> Share;

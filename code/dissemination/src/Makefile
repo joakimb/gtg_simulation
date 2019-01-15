@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for dissemination
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -KVEINS_PROJ=../../veins -I$$\(VEINS_PROJ\)/src -I/workspace/sss/randombytes -I/workspace/sss -I/workspace/sss -L/workspace/sss/randombytes -L/workspace/sss -Lsss -L$$\(VEINS_PROJ\)/src -lveins$$\(D\)
+#  opp_makemake -f --deep -KVEINS_PROJ=../../veins -I$$\(VEINS_PROJ\)/src -I/workspace/sss/randombytes -I/workspace/sss -I/workspace/sss -L/workspace/sss/randombytes -L/workspace/sss -Lsss -L/libsodium-stable/src/libsodium/.libs/ -L$$\(VEINS_PROJ\)/src -lsodium -lveins$$\(D\)
 #
 
 # Name of target to be created (-o option)
@@ -22,7 +22,7 @@ INCLUDE_PATH = -I$(VEINS_PROJ)/src -I/workspace/sss/randombytes -I/workspace/sss
 EXTRA_OBJS =
 
 # Additional libraries (-L, -l options)
-LIBS = $(LDFLAG_LIBPATH)/workspace/sss/randombytes $(LDFLAG_LIBPATH)/workspace/sss $(LDFLAG_LIBPATH)sss $(LDFLAG_LIBPATH)$(VEINS_PROJ)/src  -lveins$(D)
+LIBS = $(LDFLAG_LIBPATH)/workspace/sss/randombytes $(LDFLAG_LIBPATH)/workspace/sss $(LDFLAG_LIBPATH)sss $(LDFLAG_LIBPATH)/libsodium-stable/src/libsodium/.libs/ $(LDFLAG_LIBPATH)$(VEINS_PROJ)/src  -lsodium -lveins$(D)
 
 # Output directory
 PROJECT_OUTPUT_DIR = ../out
@@ -30,7 +30,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/DisseminationVehicle.o $O/NeighbourMemory.o $O/Token.o
+OBJS = $O/DisseminationVehicle.o $O/NeighbourMemory.o $O/PseudCred.o $O/Token.o
 
 # Message files
 MSGFILES =
@@ -64,7 +64,7 @@ include $(CONFIGFILE)
 # Simulation kernel and user interface libraries
 OMNETPP_LIBS = $(OPPMAIN_LIB) $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
 ifneq ($(TOOLCHAIN_NAME),clangc2)
-LIBS += -Wl,-rpath,$(abspath /workspace/sss/randombytes) -Wl,-rpath,$(abspath /workspace/sss) -Wl,-rpath,$(abspath sss) -Wl,-rpath,$(abspath $(VEINS_PROJ)/src)
+LIBS += -Wl,-rpath,$(abspath /workspace/sss/randombytes) -Wl,-rpath,$(abspath /workspace/sss) -Wl,-rpath,$(abspath sss) -Wl,-rpath,$(abspath /libsodium-stable/src/libsodium/.libs/) -Wl,-rpath,$(abspath $(VEINS_PROJ)/src)
 endif
 
 COPTS = $(CFLAGS) $(IMPORT_DEFINES)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)

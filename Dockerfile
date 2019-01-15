@@ -72,7 +72,16 @@ ENV XDG_RUNTIME_DIR="/run/user/1000"
 #install dependencies for debug
 RUN apt update && apt install gdb -y
 
+#install nacl/libsodium dependency
+RUN wget https://download.libsodium.org/libsodium/releases/libsodium-stable-2019-01-15.tar.gz
+RUN tar xvf libsodium-stable-2019-01-15.tar.gz
+WORKDIR /libsodium-stable
+RUN ./configure
+RUN make && make check
+RUN make install
+
 #runscript that starts omnet
+WORKDIR /
 ENV RUN_MODE=gui
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT [ "/bin/bash", "/docker-entrypoint.sh" ]

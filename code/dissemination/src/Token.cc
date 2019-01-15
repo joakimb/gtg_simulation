@@ -11,6 +11,10 @@
 #include <iostream>
 #include <cstring>
 
+//extern "C" {
+//    #include <randombytes.h>
+//}
+
 Token::Token(const std::vector<uint8_t>& ltid, int numShares, int numReconstruct) :
     ltid(ltid),
     shares(numShares)

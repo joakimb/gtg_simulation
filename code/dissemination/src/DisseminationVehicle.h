@@ -18,14 +18,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#ifndef DisseminationVehicle_H
-#define DisseminationVehicle_H
+#pragma once
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 #include "NeighbourMemory.h"
 #include <queue>
 #include <vector>
 #include "Token.h"
+#include "PseudCred.h"
 
 
 class DisseminationVehicle : public BaseWaveApplLayer {
@@ -57,7 +57,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         int numReconstruct;
         std::unique_ptr<Token> disseminating;
         std::queue<Token> disseminated;
+        std::queue<PseudCred> pseudonyms;
 
 };
 
-#endif
