@@ -23,7 +23,6 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include "Token.h"
 
 using std::vector;
 
@@ -36,9 +35,17 @@ void DisseminationVehicle::initialize(int stage) {
     }
     sendSharesSignal = registerSignal("sendshares");
 
-    cutOff = par("cutOff").intValue();
+    //read config file values
+    numShares = par("numShares").intValue();
+    numReconstruct = par("numReconstruct").intValue();
     pseudPeriod = par("pseudPeriod").intValue();
+    cutOff = par("cutOff").intValue();
+
+    //initialize neighbour memory
     neighbours.reset(new NeighbourMemory(cutOff));
+    //initialize token in progress for dissemination
+    const std::vector<uint8_t> ltid = intToArr(getId() - 1);
+    disseminating.reset(new Token(ltid, numShares, numReconstruct));
 }
 
 void DisseminationVehicle::onWSA(WaveServiceAdvertisment* wsa) {
@@ -48,7 +55,6 @@ void DisseminationVehicle::onWSA(WaveServiceAdvertisment* wsa) {
 void DisseminationVehicle::onWSM(WaveShortMessage* wsm) {
     std::cout << "receiveWSM at " << getFullName() << endl;
 }
-
 
 void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
     int me = getId() - 1;
@@ -61,6 +67,17 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
     std::copy(current_neighbours.begin(), current_neighbours.end(), std::ostream_iterator<int>(result, " : "));
 
     //std::cout << "I am: " << me << " and I know: " << result.str() <<endl;
+}
+
+std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
+    uint8_t hexBuffer[4]={0};
+
+    memcpy((uint8_t*)hexBuffer,(uint8_t*)&in,sizeof(int));
+    std::vector<uint8_t> out{};
+    for (int i = sizeof(int) - 1; i >= 0; i--){
+        out.push_back(hexBuffer[i]);
+    }
+    return out;
 }
 
 void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
@@ -84,14 +101,14 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
 
     //send shares if needed
-    simtime_t currentEpoch = simTime() / pseudPeriod;
+    //simtime_t currentEpoch = simTime() / pseudPeriod;
     //have we disseminated shares for this epoch?
-    if (currentEpoch > sentForEpoch) {
+    //if (currentEpoch > sentForEpoch) {
 
         //sendShares();
 
-    }
-
+    //}
+//
 //    Token token{Token::genRandomPseud(), 5,4};
 //
 //    for (int i = 0; i < 5; i++){
@@ -100,9 +117,12 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
 //
 //    }
 
+
     //record statistics
     assert(neighbours);
     neighbours->deleteExpired(simTime());
     emit(sendSharesSignal, neighbours->getNeighbours().size());
 
 }
+
+

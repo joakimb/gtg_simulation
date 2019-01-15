@@ -23,27 +23,40 @@
 
 #include "veins/modules/application/ieee80211p/BaseWaveApplLayer.h"
 #include "NeighbourMemory.h"
-#include <stack>
+#include <queue>
+#include <vector>
+#include "Token.h"
+
 
 class DisseminationVehicle : public BaseWaveApplLayer {
 	public:
 		virtual void initialize(int stage);
+
 	protected:
 		int currentSubscribedServiceId;
+
 	protected:
         virtual void onWSM(WaveShortMessage* wsm);
         virtual void onWSA(WaveServiceAdvertisment* wsa);
         virtual void onBSM(BasicSafetyMessage* bsm);
         virtual void handleSelfMsg(cMessage* msg);
 		virtual void handlePositionUpdate(cObject* obj);
+
 	private:
-		//std::stack<string> pseudonyms;
 		void sendShares();
+	    std::vector<uint8_t> intToArr(int i);
+
+
+	private:
 		simtime_t sentForEpoch = -1;
 		simtime_t pseudPeriod;
         std::unique_ptr<NeighbourMemory> neighbours;
         simsignal_t sendSharesSignal;
         simtime_t cutOff;
+        int numShares;
+        int numReconstruct;
+        std::unique_ptr<Token> disseminating;
+        std::queue<Token> disseminated;
 
 };
 
