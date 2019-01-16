@@ -43,7 +43,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 		virtual void handlePositionUpdate(cObject* obj);
 
 	private:
-		void sendShares();
+		void sendBeacon();
 	    std::vector<uint8_t> intToArr(int i);
 
 

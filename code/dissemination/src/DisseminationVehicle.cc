@@ -74,7 +74,7 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
     std::stringstream result;
     std::copy(current_neighbours.begin(), current_neighbours.end(), std::ostream_iterator<int>(result, " : "));
 
-    //std::cout << "I am: " << me << " and I know: " << result.str() <<endl;
+    std::cout << "I am: " << me << " and I know: " << result.str() <<endl;
 }
 
 std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
@@ -94,12 +94,17 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 
 }
 
-void DisseminationVehicle::sendShares(){
-    std::cout << "sendWSM at " << getFullName() << endl;
+void DisseminationVehicle::sendBeacon(){
+    int me = getId() - 1;
 
-    WaveShortMessage* wsm = new WaveShortMessage();
+    std::cout << me << " is sending a beacon" << endl;
+
+    BasicSafetyMessage* wsm = new BasicSafetyMessage();
     populateWSM(wsm);
-    std::string msg = std::string("I am: ") + getFullName();
+
+    //std::string msg = std::string("I am: ") + getFullName();
+    //std::string msg = pseudonyms.front().getPubKey();
+    std::string msg = "BSM";
     const char* mc = msg.c_str();
     wsm->setWsmData(mc);
     sendDown(wsm);
@@ -125,6 +130,9 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
 //
 //    }
 
+
+    //sendBeacon
+    //sendBeacon();
 
     //record statistics
     assert(neighbours);
