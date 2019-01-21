@@ -34,31 +34,28 @@ void NeighbourMemory::deleteExpired(simtime_t time){
 
 }
 
-void NeighbourMemory::deleteDuplicates(int id){
+void NeighbourMemory::deleteDuplicates(std::vector<unsigned char> pseud){
 
+    //TODO does this work after moving from string to vector<char>?
     neighbours.remove_if([&](const neighbour_node& neighbour) {
-        if(neighbour.id == id){
-            return true;
-        } else {
-            return false;
-        }
+        return (neighbour.pseud == pseud);
     });
 
 }
 
-void NeighbourMemory::newNeighbour(int id, simtime_t time) {
+void NeighbourMemory::newNeighbour(std::vector<unsigned char> pseud, simtime_t time) {
 
     deleteExpired(time);
-    deleteDuplicates(id);
-    neighbours.push_back({id, time});
+    deleteDuplicates(pseud);
+    neighbours.push_back({pseud, time});
 
 }
 
-vector<int> NeighbourMemory::getNeighbours() const {
-    vector<int> ret;
+std::vector<std::vector<unsigned char>>  NeighbourMemory::getNeighbours() const {
+    vector<std::vector<unsigned char>> ret;
 
     for (const auto& neighbour : neighbours) {
-        ret.push_back(neighbour.id);
+        ret.push_back(neighbour.pseud);
     }
 
     return ret;

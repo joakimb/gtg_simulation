@@ -23,7 +23,9 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-
+#include <nlohmann/json.hpp>
+#include "base64.h"
+using json = nlohmann::json;
 using std::vector;
 
 Define_Module(DisseminationVehicle);
@@ -51,8 +53,6 @@ void DisseminationVehicle::initialize(int stage) {
     //init pseudonyms
     for (int i = 0; i < 1000; i++){
         pseudonyms.push(PseudCred());
-        //std::string x = pseudonyms.front().getPubKey();
-        //std::cout << "len: " << x.length() << "str: " << x << endl;
     }
 }
 
@@ -65,17 +65,44 @@ void DisseminationVehicle::onWSM(WaveShortMessage* wsm) {
 }
 
 void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
-    int me = getId() - 1;
-    int sender = bsm->getSenderAddress();
+
     assert(neighbours);
-    neighbours->newNeighbour(sender, simTime());
-    vector<int> current_neighbours = neighbours->getNeighbours();
+    const char* b64Data = bsm->getWsmData();
+    std::string cborData = base64_decode(std::string(b64Data));
 
-    std::stringstream result;
-    std::copy(current_neighbours.begin(), current_neighbours.end(), std::ostream_iterator<int>(result, " : "));
+//    std::cout << "datastart: " << cborData << "dataend" << endl;
+//
+//    std::cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << endl;
+//    std::string s(cborData);
+//    hex_dump(std::cout, s);
+//    std::cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << endl;
 
-    std::cout << "I am: " << me << " and I know: " << result.str() <<endl;
-}
+    //std::cout << "here0" << endl;
+
+    try {
+        json json = json::from_cbor(cborData);
+        //std::cout << "json: " << json.dump() << endl;
+
+        std::vector<unsigned char> pseudVect = json["gtg_pseud"];
+
+        neighbours->newNeighbour(pseudVect, simTime());
+        vector<std::vector<unsigned char>> currentNeighbours = neighbours->getNeighbours();
+
+        std::cout << "I am: " << base64_encode(pseudonyms.front().getPubKey().data(),pseudonyms.front().getPubKey().size()) << endl;
+        std::cout << " and I know: " << endl;
+        for (auto it = begin (currentNeighbours); it != end (currentNeighbours); ++it) {
+            std::vector<unsigned char> v = (*it);
+            std::cout << base64_encode(v.data(), v.size()) << endl;
+        }
+
+
+    } catch (const json::parse_error& e){
+
+        //todo, do we accidentally ignore good messages here? there are messages coming in
+
+        //std::cout << "exception: " << e.what() << endl;
+    }
+ }
 
 std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
     uint8_t hexBuffer[4]={0};
@@ -95,18 +122,25 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 }
 
 void DisseminationVehicle::sendBeacon(){
-    int me = getId() - 1;
 
-    std::cout << me << " is sending a beacon" << endl;
+    std::vector<unsigned char> pseud = pseudonyms.front().getPubKey();
+
+    std::cout << "pseu: " << base64_encode(pseud.data(), pseud.size()) << " is sending a beacon" << endl;
+    //hex_dump(std::cout, pseud);
+
 
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
+
     populateWSM(wsm);
 
-    //std::string msg = std::string("I am: ") + getFullName();
-    //std::string msg = pseudonyms.front().getPubKey();
-    std::string msg = "BSM";
-    const char* mc = msg.c_str();
-    wsm->setWsmData(mc);
+    json cborStruct;
+    cborStruct["gtg_pseud"] = pseud;
+
+    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
+
+    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
+    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
+    wsm->setWsmData(b64.c_str());
     sendDown(wsm);
 }
 
@@ -132,7 +166,7 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
 
 
     //sendBeacon
-    //sendBeacon();
+    sendBeacon();
 
     //record statistics
     assert(neighbours);

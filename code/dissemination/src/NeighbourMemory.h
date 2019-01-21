@@ -11,7 +11,7 @@
 #include <vector>
 
 struct neighbour_node {
-    int id;
+    std::vector<unsigned char> pseud;
     omnetpp::simtime_t time;
 };
 
@@ -19,12 +19,12 @@ struct neighbour_node {
 class NeighbourMemory {
 public:
     NeighbourMemory(omnetpp::simtime_t cutOff);
-    void newNeighbour(int id, omnetpp::simtime_t time);
-    std::vector<int> getNeighbours() const;
+    void newNeighbour(std::vector<unsigned char> pseud, omnetpp::simtime_t time);
+    std::vector<std::vector<unsigned char>> getNeighbours() const;
     void deleteExpired(omnetpp::simtime_t time);
 private:
     int memSize;
     omnetpp::simtime_t cutOff; //forget neighbours after defined time (in omnetpp.ini)
     std::list<neighbour_node> neighbours;
-    void deleteDuplicates(int id);
+    void deleteDuplicates(std::vector<unsigned char> pseud);
 };

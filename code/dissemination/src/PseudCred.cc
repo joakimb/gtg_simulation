@@ -15,6 +15,6 @@ PseudCred::PseudCred() {
     crypto_box_keypair(pubKey, privKey);
 }
 
-std::string PseudCred::getPubKey(){
-    return std::string{reinterpret_cast<char*>(pubKey), crypto_box_PUBLICKEYBYTES};
+std::vector<unsigned char>PseudCred::getPubKey(){
+    return std::vector<unsigned char>(pubKey, pubKey + sizeof(pubKey)/sizeof(*pubKey));
 }
