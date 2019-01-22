@@ -27,6 +27,8 @@
 #include "Token.h"
 #include "PseudCred.h"
 
+#define BEACON_SELF_MSG 1000
+
 
 class DisseminationVehicle : public BaseWaveApplLayer {
 	public:
@@ -58,6 +60,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         std::unique_ptr<Token> disseminating;
         std::queue<Token> disseminated;
         std::queue<PseudCred> pseudonyms;
-
+        simtime_t beaconOffset;
+        cMessage* beaconMsg;
 };
 

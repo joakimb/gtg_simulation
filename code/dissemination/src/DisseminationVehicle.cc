@@ -34,25 +34,31 @@ void DisseminationVehicle::initialize(int stage) {
     BaseWaveApplLayer::initialize(stage);
     if (stage == 0) {
         currentSubscribedServiceId = -1;
-    }
-    sendSharesSignal = registerSignal("sendshares");
 
-    //read config file values
-    numShares = par("numShares").intValue();
-    numReconstruct = par("numReconstruct").intValue();
-    pseudPeriod = par("pseudPeriod").intValue();
-    cutOff = par("cutOff").intValue();
+        sendSharesSignal = registerSignal("sendshares");
 
-    //initialize neighbour memory
-    neighbours.reset(new NeighbourMemory(cutOff));
+        //read config file values
+        numShares = par("numShares").intValue();
+        numReconstruct = par("numReconstruct").intValue();
+        pseudPeriod = par("pseudPeriod").intValue();
+        cutOff = par("cutOff").intValue();
 
-    //initialize token in progress for dissemination
-    const std::vector<uint8_t> ltid = intToArr(getId() - 1);
-    disseminating.reset(new Token(ltid, numShares, numReconstruct));
+        //initialize neighbour memory
+        neighbours.reset(new NeighbourMemory(cutOff));
 
-    //init pseudonyms
-    for (int i = 0; i < 1000; i++){
-        pseudonyms.push(PseudCred());
+        //initialize token in progress for dissemination
+        const std::vector<uint8_t> ltid = intToArr(getId() - 1);
+        disseminating.reset(new Token(ltid, numShares, numReconstruct));
+
+        //init pseudonyms
+        for (int i = 0; i < 1000; i++){
+            pseudonyms.push(PseudCred());
+        }
+
+        //schedule beaconing
+        beaconMsg = new cMessage("beaconmsg", BEACON_SELF_MSG);
+        beaconOffset = dblrand() * par("pubKeyBeaconInterval").doubleValue() ;
+        scheduleAt(simTime() + beaconOffset, beaconMsg);
     }
 }
 
@@ -66,33 +72,28 @@ void DisseminationVehicle::onWSM(WaveShortMessage* wsm) {
 
 void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
 
+
     assert(neighbours);
     const char* b64Data = bsm->getWsmData();
-    std::string cborData = base64_decode(std::string(b64Data));
+    std::string b64String = std::string(b64Data);
+    //std::cout << "incoming: " << b64String << endl;
+    std::string cborData = base64_decode(b64String);
 
-//    std::cout << "datastart: " << cborData << "dataend" << endl;
-//
-//    std::cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << endl;
-//    std::string s(cborData);
-//    hex_dump(std::cout, s);
-//    std::cout << "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN" << endl;
 
-    //std::cout << "here0" << endl;
 
     try {
         json json = json::from_cbor(cborData);
-        //std::cout << "json: " << json.dump() << endl;
 
         std::vector<unsigned char> pseudVect = json["gtg_pseud"];
 
         neighbours->newNeighbour(pseudVect, simTime());
         vector<std::vector<unsigned char>> currentNeighbours = neighbours->getNeighbours();
 
-        std::cout << "I am: " << base64_encode(pseudonyms.front().getPubKey().data(),pseudonyms.front().getPubKey().size()) << endl;
-        std::cout << " and I know: " << endl;
+        //std::cout << "I am: " << base64_encode(pseudonyms.front().getPubKey().data(),pseudonyms.front().getPubKey().size()) << endl;
+        //std::cout << " and I know: " << endl;
         for (auto it = begin (currentNeighbours); it != end (currentNeighbours); ++it) {
             std::vector<unsigned char> v = (*it);
-            std::cout << base64_encode(v.data(), v.size()) << endl;
+            //std::cout << base64_encode(v.data(), v.size()) << endl;
         }
 
 
@@ -100,7 +101,7 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
 
         //todo, do we accidentally ignore good messages here? there are messages coming in
 
-        //std::cout << "exception: " << e.what() << endl;
+        std::cout << "exception: " << e.what() << endl;
     }
  }
 
@@ -117,29 +118,35 @@ std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
 
 void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 
-        BaseWaveApplLayer::handleSelfMsg(msg);
 
+        switch (msg->getKind()) {
+               case BEACON_SELF_MSG: {
+                   sendBeacon();
+                   scheduleAt(simTime() + beaconOffset, beaconMsg);
+                   break;
+               }
+               default: {
+                    BaseWaveApplLayer::handleSelfMsg(msg);
+                    break;
+               }
+        }
 }
 
 void DisseminationVehicle::sendBeacon(){
 
     std::vector<unsigned char> pseud = pseudonyms.front().getPubKey();
 
-    std::cout << "pseu: " << base64_encode(pseud.data(), pseud.size()) << " is sending a beacon" << endl;
-    //hex_dump(std::cout, pseud);
-
+    //std::cout << "pseu: " << base64_encode(pseud.data(), pseud.size()) << " is sending a beacon" << endl;
 
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
-
     populateWSM(wsm);
 
     json cborStruct;
     cborStruct["gtg_pseud"] = pseud;
-
     std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-
     const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
     std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
+
     wsm->setWsmData(b64.c_str());
     sendDown(wsm);
 }
@@ -151,22 +158,12 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
     //simtime_t currentEpoch = simTime() / pseudPeriod;
     //have we disseminated shares for this epoch?
     //if (currentEpoch > sentForEpoch) {
-
         //sendShares();
-
     //}
-//
 //    Token token{Token::genRandomPseud(), 5,4};
-//
 //    for (int i = 0; i < 5; i++){
-//
 //        std::cout << "share: " << token.getNextShare().data() << "\n";
-//
 //    }
-
-
-    //sendBeacon
-    sendBeacon();
 
     //record statistics
     assert(neighbours);

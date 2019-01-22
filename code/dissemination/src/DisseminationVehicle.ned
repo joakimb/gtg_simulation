@@ -32,5 +32,6 @@ simple DisseminationVehicle extends BaseWaveApplLayer
     int pseudPeriod;
     int numShares;
     int numReconstruct;
+    double pubKeyBeaconInterval;
     //@display("i=block/app2");
 }
