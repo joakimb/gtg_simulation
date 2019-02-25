@@ -35,6 +35,10 @@ Token::Token(const std::vector<uint8_t>& ltid, int numShares, int numReconstruct
 
 }
 
+PseudCred Token::getPseud(){
+    return pseud;
+}
+
 Share Token::getNextShare(){
     if (nextShare < shares.size()){
         return shares[nextShare++];

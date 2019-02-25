@@ -50,11 +50,6 @@ void DisseminationVehicle::initialize(int stage) {
         const std::vector<uint8_t> ltid = intToArr(getId() - 1);
         disseminating.reset(new Token(ltid, numShares, numReconstruct));
 
-        //init pseudonyms
-        for (int i = 0; i < 1000; i++){
-            pseudonyms.push(PseudCred());
-        }
-
         //schedule beaconing
         beaconMsg = new cMessage("beaconmsg", BEACON_SELF_MSG);
         beaconOffset = dblrand() * par("pubKeyBeaconInterval").doubleValue() ;
@@ -136,7 +131,7 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 
 void DisseminationVehicle::sendBeacon(){
 
-    std::vector<unsigned char> pseud = pseudonyms.front().getPubKey();
+    std::vector<unsigned char> pseud = disseminated.front().getPseud().getPubKey();
 
     //std::cout << "pseu: " << base64_encode(pseud.data(), pseud.size()) << " is sending a beacon" << endl;
 

@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include "PseudCred.h"
 extern "C" {
     #include <sss.h>
 }
@@ -17,8 +18,11 @@ public:
     Share getNextShare();
     void putReceipt(std::string receipt);
     bool isDisseminated();
+    PseudCred getPseud();
+
 
 private:
+    PseudCred pseud;
     std::vector<uint8_t> ltid;
     std::vector<Share> shares;
     std::map<std::string, std::string> recipts;

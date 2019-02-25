@@ -61,7 +61,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         int numReconstruct;
         std::unique_ptr<Token> disseminating;
         std::queue<Token> disseminated;
-        std::queue<PseudCred> pseudonyms;
+        //std::queue<PseudCred> pseudonyms;
         simtime_t beaconOffset;
         cMessage* beaconMsg;
 };
