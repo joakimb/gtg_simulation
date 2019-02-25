@@ -75,35 +75,37 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
 
     assert(neighbours);
     const char* b64Data = bsm->getWsmData();
-    std::string b64String = std::string(b64Data);
-    //std::cout << "incoming: " << b64String << endl;
-    std::string cborData = base64_decode(b64String);
+    std::vector<unsigned char> pseudVect = decodeBeacon(b64Data);
+
+    neighbours->newNeighbour(pseudVect, simTime());
 
 
-
-    try {
-        json json = json::from_cbor(cborData);
-
-        std::vector<unsigned char> pseudVect = json["gtg_pseud"];
-
-        neighbours->newNeighbour(pseudVect, simTime());
-        vector<std::vector<unsigned char>> currentNeighbours = neighbours->getNeighbours();
-
-        //std::cout << "I am: " << base64_encode(pseudonyms.front().getPubKey().data(),pseudonyms.front().getPubKey().size()) << endl;
-        //std::cout << " and I know: " << endl;
-        for (auto it = begin (currentNeighbours); it != end (currentNeighbours); ++it) {
-            std::vector<unsigned char> v = (*it);
-            //std::cout << base64_encode(v.data(), v.size()) << endl;
-        }
-
-
-    } catch (const json::parse_error& e){
-
-        //todo, do we accidentally ignore good messages here? there are messages coming in
-
-        std::cout << "exception: " << e.what() << endl;
-    }
+//debug print
+//    vector<std::vector<unsigned char>> currentNeighbours = neighbours->getNeighbours();
+//    for (auto it = begin (currentNeighbours); it != end (currentNeighbours); ++it) {
+//        std::vector<unsigned char> v = (*it);
+//        std::cout << base64_encode(v.data(), v.size()) << endl;
+//    }
  }
+
+std::vector<unsigned char> DisseminationVehicle::decodeBeacon(std::string b64Data) {
+
+    std::string b64String = std::string(b64Data);
+        //std::cout << "incoming: " << b64String << endl;
+        std::string cborData = base64_decode(b64String);
+
+        try {
+
+            json json = json::from_cbor(cborData);
+            return json["gtg_pseud"];
+
+        } catch (const json::parse_error& e){
+
+            //todo, do we accidentally ignore good messages here? there are messages coming in
+
+            std::cout << "exception: " << e.what() << endl;
+        }
+}
 
 std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
     uint8_t hexBuffer[4]={0};
