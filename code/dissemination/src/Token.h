@@ -18,8 +18,6 @@ public:
     void putReceipt(std::string receipt);
     bool isDisseminated();
 
-    static std::vector<uint8_t> genRandomPseud();
-
 private:
     std::vector<uint8_t> ltid;
     std::vector<Share> shares;

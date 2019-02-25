@@ -56,14 +56,6 @@ Token::~Token() {
     // TODO Auto-generated destructor stub
 }
 
-std::vector<uint8_t> Token::genRandomPseud(){
-    std::vector<uint8_t> pseudonym{sss_MLEN};
-    for (size_t i = 0; i < pseudonym.size(); ++i) {
-        pseudonym[i] = 42;
-    }
-    return pseudonym;
-}
-
 //======================================================
 //    uint8_t data[sss_MLEN], restored[sss_MLEN];
 //    sss_Share shares[5];
