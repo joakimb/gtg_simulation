@@ -131,9 +131,19 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 
 void DisseminationVehicle::sendBeacon(){
 
-    std::vector<unsigned char> pseud = disseminated.front().getPseud().getPubKey();
+    std::vector<unsigned char> pseud;
 
-    //std::cout << "pseu: " << base64_encode(pseud.data(), pseud.size()) << " is sending a beacon" << endl;
+    if (disseminated.empty()){
+
+        //TODO log statistic about NOT having access to disseminated token
+        pseud = disseminating->getPseud().getPubKey();
+
+    } else {
+
+        //TODO log statistic about having access to disseminated token
+        pseud = disseminated.front().getPseud().getPubKey();
+
+    }
 
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
     populateWSM(wsm);
@@ -146,6 +156,7 @@ void DisseminationVehicle::sendBeacon(){
 
     wsm->setWsmData(b64.c_str());
     sendDown(wsm);
+
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
