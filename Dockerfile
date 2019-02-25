@@ -52,7 +52,7 @@ ENV DISPLAY=:99
 
 #install omnet 5.4.1
 RUN mkdir /omnet
-COPY ./omnetpp-5.4.1-src-linux.tgz /omnet
+ADD https://ipfs.omnetpp.org/release/5.4.1/omnetpp-5.4.1-src-linux.tgz /omnet
 RUN tar -xf /omnet/omnetpp-5.4.1-src-linux.tgz -C /omnet
 RUN rm /omnet/omnetpp-5.4.1-src-linux.tgz
 ENV PATH="/omnet/omnetpp-5.4.1/bin:${PATH}"
@@ -73,9 +73,9 @@ ENV XDG_RUNTIME_DIR="/run/user/1000"
 RUN apt update && apt install gdb -y
 
 #install nacl/libsodium dependency
-RUN wget https://download.libsodium.org/libsodium/releases/libsodium-stable-2019-01-15.tar.gz
-RUN tar xvf libsodium-stable-2019-01-15.tar.gz
-WORKDIR /libsodium-stable
+RUN wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.17.tar.gz
+RUN tar xvf libsodium-1.0.17.tar.gz
+WORKDIR /libsodium-1.0.17
 RUN ./configure
 RUN make && make check
 RUN make install

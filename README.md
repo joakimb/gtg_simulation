@@ -10,11 +10,8 @@ The simulation implements the key dissemination protocol described in the paper.
 For convinience and reproducibility, the environment is provided as a Dockerfile
 
 ## Prerequisites for running
-### Installed Programs
-docker
 
-### Files
-Download the omnet 5.4.1 linux zip into the project root dir (keep the naming omnetpp-5.4.1-src-linux.tgz)
+docker
 
 ## How To
 
