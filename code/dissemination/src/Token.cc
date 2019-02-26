@@ -39,11 +39,21 @@ PseudCred Token::getPseud(){
     return pseud;
 }
 
-Share Token::getNextShare(){
-    if (nextShare < shares.size()){
+Share Token::getNextShare(std::string receiver){
+
+    if (receivers.find(receiver) != receivers.end()){
+
+        throw "Double sharing attempted";
+
+    } else if (nextShare < shares.size()){
+
+        receivers.insert(receiver);
         return shares[nextShare++];
+
     } else {
+
         throw "Attempting to take too many shares";
+
     }
 
 }
