@@ -43,7 +43,7 @@ Share Token::getNextShare(std::string receiver){
 
     if (receivers.find(receiver) != receivers.end()){
 
-        throw "Double sharing attempted";
+        throw DoubleShareException();
 
     } else if (nextShare < shares.size()){
 
@@ -52,7 +52,7 @@ Share Token::getNextShare(std::string receiver){
 
     } else {
 
-        throw "Attempting to take too many shares";
+        throw DepletedSharePoolException();
 
     }
 

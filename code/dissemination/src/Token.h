@@ -10,6 +10,22 @@ extern "C" {
     #include <sss.h>
 }
 
+struct DoubleShareException : public std::exception
+{
+    const char * what () const throw ()
+    {
+        return "Double sharing attempted";
+    }
+};
+
+struct DepletedSharePoolException : public std::exception
+{
+    const char * what () const throw ()
+    {
+        return "Attempting to take too many shares";
+    }
+};
+
 typedef std::array<uint8_t, sizeof(sss_Share)> Share;
 
 class Token {
