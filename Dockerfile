@@ -73,9 +73,9 @@ ENV XDG_RUNTIME_DIR="/run/user/1000"
 RUN apt update && apt install gdb -y
 
 #install nacl/libsodium dependency
-RUN wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.17.tar.gz
-RUN tar xvf libsodium-1.0.17.tar.gz
-WORKDIR /libsodium-1.0.17
+RUN wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz -O libsodium-stable.tar.gz
+RUN tar xvf libsodium-stable.tar.gz
+WORKDIR /libsodium-stable
 RUN ./configure
 RUN make && make check
 RUN make install
