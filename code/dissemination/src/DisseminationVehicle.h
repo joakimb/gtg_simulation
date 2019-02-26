@@ -26,6 +26,7 @@
 #include <vector>
 #include "Token.h"
 #include "PseudCred.h"
+#include "Crypto.h"
 
 #define BEACON_SELF_MSG 1000
 
@@ -45,7 +46,9 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 		virtual void handlePositionUpdate(cObject* obj);
 
 	private:
-		void sendBeacon();
+        void sendBeacon();
+        void sendBSM(std::string msg);
+        void sendShare(std::string share);
 	    std::vector<uint8_t> intToArr(int i);
 	    std::vector<unsigned char> decodeBeacon(std::string b64Data);
 

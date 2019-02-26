@@ -129,6 +129,13 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
         }
 }
 
+void DisseminationVehicle::sendBSM(std::string msg){
+    BasicSafetyMessage* wsm = new BasicSafetyMessage();
+    populateWSM(wsm);
+    wsm->setWsmData(msg.c_str());
+    sendDown(wsm);
+}
+
 void DisseminationVehicle::sendBeacon(){
 
     std::vector<unsigned char> pseud;
@@ -136,6 +143,7 @@ void DisseminationVehicle::sendBeacon(){
     if (disseminated.empty()){
 
         //TODO log statistic about NOT having access to disseminated token
+        assert(neighbours);
         pseud = disseminating->getPseud().getPubKey();
 
     } else {
@@ -145,38 +153,77 @@ void DisseminationVehicle::sendBeacon(){
 
     }
 
-    BasicSafetyMessage* wsm = new BasicSafetyMessage();
-    populateWSM(wsm);
+
 
     json cborStruct;
     cborStruct["gtg_pseud"] = pseud;
     std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
     const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
+    //todo consider using sodium bin2hex instead of base64
     std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
 
-    wsm->setWsmData(b64.c_str());
-    sendDown(wsm);
+    sendBSM(b64);
 
 }
 
+void DisseminationVehicle::sendShare(std::string share){
+    //todo put in cbor struct first
+    sendBSM(share);
+}
+
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
+
     BaseWaveApplLayer::handlePositionUpdate(obj);
 
+    assert(neighbours);
+
+    //record statistics
+    neighbours->deleteExpired(simTime());
+    emit(sendSharesSignal, neighbours->getNeighbours().size());
+
     //send shares if needed
-    //simtime_t currentEpoch = simTime() / pseudPeriod;
-    //have we disseminated shares for this epoch?
-    //if (currentEpoch > sentForEpoch) {
-        //sendShares();
-    //}
+    simtime_t currentEpoch = simTime() / pseudPeriod;
+
+    if (currentEpoch > sentForEpoch) {
+
+        std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
+
+
+        for(std::vector<std::vector<unsigned char>>::iterator it = candidates.begin(); it != candidates.end(); ++it) {
+
+            try{
+
+                std::vector<unsigned char> candidateV = (*it);
+                std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
+                Share share = disseminating->getNextShare(candidateS);
+                std::vector<unsigned char> tokenPrivKey;
+                std::vector<unsigned char> recieverPubKey;
+                Crypto crypto;
+                std::string encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
+                sendShare(encryptedShare);
+
+            } catch (DepletedSharePoolException& e) {
+
+                //we are finished with this token
+                disseminated.push(*disseminating.get());
+                const std::vector<uint8_t> ltid = intToArr(getId() - 1);
+                disseminating.reset(new Token(ltid, numShares, numReconstruct));
+
+            } catch (DoubleShareException& e) {
+
+                //try next neighbour
+                continue;
+
+            }
+        }
+        //Share share = disseminating->getNextShare();
+    }
 //    Token token{Token::genRandomPseud(), 5,4};
 //    for (int i = 0; i < 5; i++){
 //        std::cout << "share: " << token.getNextShare().data() << "\n";
 //    }
 
-    //record statistics
-    assert(neighbours);
-    neighbours->deleteExpired(simTime());
-    emit(sendSharesSignal, neighbours->getNeighbours().size());
+
 
 }
 
