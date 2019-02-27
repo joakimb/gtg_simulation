@@ -15,9 +15,11 @@ Crypto::Crypto() {
     }
 }
 
-std::string Crypto::encryptShare(Share share, std::vector<unsigned char> myPrivKey, std::vector<unsigned char> recipientPubKey){
+std::vector<unsigned char> Crypto::encryptShare(Share share, std::vector<unsigned char> myPrivKey, std::vector<unsigned char> recipientPubKey){
     //todo
-    return "DUMMYMESSAGE";
+    std::string s = "DUMMYMESSAGE";
+    std::vector<unsigned char> v( s.begin(), s.end() );
+    return v;
 }
 
 

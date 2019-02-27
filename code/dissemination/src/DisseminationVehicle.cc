@@ -92,14 +92,25 @@ std::vector<unsigned char> DisseminationVehicle::decodeBeacon(std::string b64Dat
         try {
 
             json json = json::from_cbor(cborData);
-            return json["gtg_pseud"];
+            std::cout << "dump: " << json.dump() << endl;
+            std::string type = json.at("gtg_type");
+            if(type == "GTG_PSEUD"){
+                return json.at("gtg_pseud");
+            } else if (type == "GTG_SHARE"){
+                return json.at("gtg_share");
+            }
 
         } catch (const json::parse_error& e){
 
             //todo, do we accidentally ignore good messages here? there are messages coming in
 
             std::cout << "exception: " << e.what() << endl;
+        } catch (const std::exception& e){
+            std::cout << "ex:" << e.what() << endl;
         }
+
+        throw "does not decode into message";
+
 }
 
 std::vector<uint8_t> DisseminationVehicle::intToArr(int in) {
@@ -156,6 +167,7 @@ void DisseminationVehicle::sendBeacon(){
 
 
     json cborStruct;
+    cborStruct["gtg_type"] = "GTG_PSEUD";
     cborStruct["gtg_pseud"] = pseud;
     std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
     const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
@@ -166,9 +178,18 @@ void DisseminationVehicle::sendBeacon(){
 
 }
 
-void DisseminationVehicle::sendShare(std::string share){
-    //todo put in cbor struct first
-    sendBSM(share);
+void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
+
+    json cborStruct;
+    cborStruct["gtg_type"] = "GTG_SHARE";
+    cborStruct["gtg_share"] = share;
+    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
+    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
+    //todo consider using sodium bin2hex instead of base64
+    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
+
+    std::cout << "sencing share" << b64 << endl;
+    sendBSM(b64);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
@@ -199,7 +220,7 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
                 std::vector<unsigned char> tokenPrivKey;
                 std::vector<unsigned char> recieverPubKey;
                 Crypto crypto;
-                std::string encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
+                std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
                 sendShare(encryptedShare);
 
             } catch (DepletedSharePoolException& e) {
