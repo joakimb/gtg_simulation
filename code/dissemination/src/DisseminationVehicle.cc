@@ -193,16 +193,23 @@ void DisseminationVehicle::sendShares(){
 
 void DisseminationVehicle::sendGTGMessage(json cborStruct){
 
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
+    std::string encoded = encodeStruct(cborStruct);
 
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
     populateWSM(wsm);
-    wsm->setWsmData(b64.c_str());
+    wsm->setWsmData(encoded.c_str());
     sendDown(wsm);
 }
+
+std::string DisseminationVehicle::encodeStruct(json cborStruct){
+
+    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
+    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
+    //todo consider using sodium bin2hex instead of base64
+    return base64_encode(cborMsgChar, cborMsg.size());
+}
+
+
 
 void DisseminationVehicle::sendBeacon(){
 

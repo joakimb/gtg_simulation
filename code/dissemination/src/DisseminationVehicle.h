@@ -55,6 +55,8 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         void sendGTGMessage(json json);
 	    std::vector<uint8_t> intToArr(int i);
 	    void decodeBeacon(std::string b64Data);
+	    std::string encodeStruct(json cborStruct);
+
 
 
 
