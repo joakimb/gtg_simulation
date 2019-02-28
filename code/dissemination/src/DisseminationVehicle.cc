@@ -143,7 +143,7 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
         }
 }
 
-void DisseminationVehicle::sendBSM(std::string msg){
+void DisseminationVehicle::sendGTGMessage(std::string msg){
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
     populateWSM(wsm);
     wsm->setWsmData(msg.c_str());
@@ -175,7 +175,7 @@ void DisseminationVehicle::sendBeacon(){
     //todo consider using sodium bin2hex instead of base64
     std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
 
-    sendBSM(b64);
+    sendGTGMessage(b64);
 
 }
 
@@ -190,7 +190,7 @@ void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
     std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
 
     std::cout << "sencing share" << b64 << endl;
-    sendBSM(b64);
+    sendGTGMessage(b64);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {

@@ -34,6 +34,7 @@ OBJS = \
     $O/base64.o \
     $O/Crypto.o \
     $O/DisseminationVehicle.o \
+    $O/GTGMessage.o \
     $O/NeighbourMemory.o \
     $O/PseudCred.o \
     $O/Token.o

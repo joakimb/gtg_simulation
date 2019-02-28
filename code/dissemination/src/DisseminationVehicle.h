@@ -47,7 +47,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 
 	private:
         void sendBeacon();
-        void sendBSM(std::string msg);
+        void sendGTGMessage(std::string msg);
         void sendShare(std::vector<unsigned char> share);
 	    std::vector<uint8_t> intToArr(int i);
 	    void decodeBeacon(std::string b64Data);
