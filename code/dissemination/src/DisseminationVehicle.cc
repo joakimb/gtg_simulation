@@ -24,6 +24,8 @@
 #include <sstream>
 #include <iterator>
 #include "base64.h"
+#include "ShareMessage.h"
+#include "PseudMessage.h"
 
 using std::vector;
 
@@ -191,7 +193,7 @@ void DisseminationVehicle::sendShares(){
     }
 }
 
-void DisseminationVehicle::sendGTGMessage(GTGMessage msg){
+void DisseminationVehicle::sendGTGMessage(GTGMessage& msg){
 
     std::string encoded = msg.getEncoded();
 
@@ -218,7 +220,7 @@ void DisseminationVehicle::sendBeacon(){
 
     }
 
-    GTGMessage msg (GTG_MSG_TYPE_PSEUD,pseud);
+    PseudMessage msg (pseud);
     sendGTGMessage(msg);
 
 }
@@ -226,7 +228,7 @@ void DisseminationVehicle::sendBeacon(){
 void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
 
     std::cout << "SENDSHARE" << endl;
-    GTGMessage msg (GTG_MSG_TYPE_SHARE,share);
+    ShareMessage msg (share);
     sendGTGMessage(msg);
 }
 

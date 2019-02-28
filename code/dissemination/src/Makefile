@@ -37,6 +37,8 @@ OBJS = \
     $O/GTGMessage.o \
     $O/NeighbourMemory.o \
     $O/PseudCred.o \
+    $O/PseudMessage.o \
+    $O/ShareMessage.o \
     $O/Token.o
 
 # Message files

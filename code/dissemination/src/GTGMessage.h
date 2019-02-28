@@ -16,16 +16,15 @@ using json = nlohmann::json;
 #define GTG_MSG_TYPE_PSEUD "GTG_PSEUD"
 #define GTG_MSG_TYPE_SHARE "GTG_SHARE"
 
-class GTGMessage : public ::BasicSafetyMessage {
+class GTGMessage {
 public:
-    GTGMessage(std::string type, std::vector<unsigned char> data);
     std::string getType();
-    std::string getEncoded();
+    virtual std::string getEncoded() =0;
     std::vector<unsigned char> getData();
-private:
+protected:
     std::string encodeStruct(json cborStruct);
 
-private:
+protected:
     std::string type;
     std::vector<unsigned char> data;
 };

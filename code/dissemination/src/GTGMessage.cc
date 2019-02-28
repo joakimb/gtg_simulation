@@ -8,35 +8,8 @@
 #include "GTGMessage.h"
 #include "base64.h"
 
-GTGMessage::GTGMessage(std::string type, std::vector<unsigned char> data) :
-    type(type),
-    data(data){
-}
-
 std::string GTGMessage::getType(){
     return type;
-}
-
-std::string GTGMessage::getEncoded(){
-
-    json cborStruct;
-    cborStruct["gtg_type"] = type;
-
-    if (type == GTG_MSG_TYPE_PSEUD) {
-
-        cborStruct["gtg_pseud"] = data;
-
-    } else if(type == GTG_MSG_TYPE_SHARE){
-
-        cborStruct["gtg_share"] = data;
-
-    } else {
-
-        throw "bad message type";
-
-    }
-
-    return encodeStruct(cborStruct);
 }
 
 std::string GTGMessage::encodeStruct(json cborStruct){
