@@ -54,6 +54,11 @@ void DisseminationVehicle::initialize(int stage) {
         beaconMsg = new cMessage("beaconmsg", BEACON_SELF_MSG);
         beaconOffset = dblrand() * par("pubKeyBeaconInterval").doubleValue() ;
         scheduleAt(simTime() + beaconOffset, beaconMsg);
+
+        //schedule share sending
+        shareMsg = new cMessage("sharemsg", SEND_SHARES_SELF_MSG);
+        shareSendInterval = dblrand() * par("shareSendInterval").doubleValue() ;
+        scheduleAt(simTime() + shareSendInterval, shareMsg);
     }
 }
 
@@ -136,6 +141,46 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
                    scheduleAt(simTime() + beaconOffset, beaconMsg);
                    break;
                }
+               case SEND_SHARES_SELF_MSG: {
+                   //send shares if needed
+                   simtime_t currentEpoch = simTime() / pseudPeriod;
+
+                   if (currentEpoch > sentForEpoch) {
+
+                       std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
+
+
+                       for(std::vector<std::vector<unsigned char>>::iterator it = candidates.begin(); it != candidates.end(); ++it) {
+
+                           try{
+
+                               std::vector<unsigned char> candidateV = (*it);
+                               std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
+                               Share share = disseminating->getNextShare(candidateS);
+                               std::vector<unsigned char> tokenPrivKey;
+                               std::vector<unsigned char> recieverPubKey;
+                               Crypto crypto;
+                               std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
+                               sendShare(encryptedShare);
+
+                           } catch (DepletedSharePoolException& e) {
+
+                               //we are finished with this token
+                               disseminated.push(*disseminating.get());
+                               const std::vector<uint8_t> ltid = intToArr(getId() - 1);
+                               disseminating.reset(new Token(ltid, numShares, numReconstruct));
+
+                           } catch (DoubleShareException& e) {
+
+                               //try next neighbour
+                               continue;
+
+                           }
+                       }
+                   }
+                   scheduleAt(simTime() + shareSendInterval, shareMsg);
+                   break;
+               }
                default: {
                     BaseWaveApplLayer::handleSelfMsg(msg);
                     break;
@@ -181,6 +226,7 @@ void DisseminationVehicle::sendBeacon(){
 
 void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
 
+    std::cout << "SENDSHARE" << endl;
     json cborStruct;
     cborStruct["gtg_type"] = "GTG_SHARE";
     cborStruct["gtg_share"] = share;
@@ -202,50 +248,6 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
     //record statistics
     neighbours->deleteExpired(simTime());
     emit(sendSharesSignal, neighbours->getNeighbours().size());
-
-    //send shares if needed
-    simtime_t currentEpoch = simTime() / pseudPeriod;
-
-    if (currentEpoch > sentForEpoch) {
-
-        std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
-
-
-        for(std::vector<std::vector<unsigned char>>::iterator it = candidates.begin(); it != candidates.end(); ++it) {
-
-            try{
-
-                std::vector<unsigned char> candidateV = (*it);
-                std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
-                Share share = disseminating->getNextShare(candidateS);
-                std::vector<unsigned char> tokenPrivKey;
-                std::vector<unsigned char> recieverPubKey;
-                Crypto crypto;
-                std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
-                sendShare(encryptedShare);
-
-            } catch (DepletedSharePoolException& e) {
-
-                //we are finished with this token
-                disseminated.push(*disseminating.get());
-                const std::vector<uint8_t> ltid = intToArr(getId() - 1);
-                disseminating.reset(new Token(ltid, numShares, numReconstruct));
-
-            } catch (DoubleShareException& e) {
-
-                //try next neighbour
-                continue;
-
-            }
-        }
-        //Share share = disseminating->getNextShare();
-    }
-//    Token token{Token::genRandomPseud(), 5,4};
-//    for (int i = 0; i < 5; i++){
-//        std::cout << "share: " << token.getNextShare().data() << "\n";
-//    }
-
-
 
 }
 

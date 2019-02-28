@@ -29,6 +29,7 @@
 #include "Crypto.h"
 
 #define BEACON_SELF_MSG 1000
+#define SEND_SHARES_SELF_MSG 1001
 
 
 class DisseminationVehicle : public BaseWaveApplLayer {
@@ -65,6 +66,8 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         std::unique_ptr<Token> disseminating;
         std::queue<Token> disseminated;
         simtime_t beaconOffset;
+        simtime_t shareSendInterval;
         cMessage* beaconMsg;
+        cMessage* shareMsg;
 };
 
