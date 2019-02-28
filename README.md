@@ -35,7 +35,22 @@ docker
     docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim
 
 When omnet opens, and you are prompted to select a workspace, select:
+
     /workspace
+
+Then choose to not import/install inet and examples. After that:
+
+    File -> Import
+    Select: General > Existing projects into workspace
+    Type in /workspace in "Select root directory"
+    Finish
+
+Then:
+
+    Project -> clean
+    select "clean all projects"
+    clean
+
 
 <!---
 [TODO is this still needed?]
