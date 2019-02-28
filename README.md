@@ -54,8 +54,7 @@ Install xquarts, then:
     ip={your-ip}
     docker build -t omsim .
     /opt/X11/bin/xhost + $ip
-    xhost + $ip
-    docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$ip:0 --volume="/tmp/.X11-unix:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim       \n
+    docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$ip:0 --volume="/tmp/.X11-unix:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim
 
 #### Windows
 Configure an X server as described in:
