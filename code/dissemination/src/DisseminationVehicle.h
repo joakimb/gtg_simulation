@@ -50,7 +50,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         void sendBSM(std::string msg);
         void sendShare(std::vector<unsigned char> share);
 	    std::vector<uint8_t> intToArr(int i);
-	    std::vector<unsigned char> decodeBeacon(std::string b64Data);
+	    void decodeBeacon(std::string b64Data);
 
 
 
