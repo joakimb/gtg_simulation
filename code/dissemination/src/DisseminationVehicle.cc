@@ -70,9 +70,7 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
 
     assert(neighbours);
     const char* b64Data = bsm->getWsmData();
-    std::vector<unsigned char> pseudVect = decodeBeacon(b64Data);
-
-    neighbours->newNeighbour(pseudVect, simTime());
+    decodeBeacon(b64Data);
 
 
 //debug print
@@ -83,7 +81,7 @@ void DisseminationVehicle::onBSM(BasicSafetyMessage* bsm){
 //    }
  }
 
-std::vector<unsigned char> DisseminationVehicle::decodeBeacon(std::string b64Data) {
+void DisseminationVehicle::decodeBeacon(std::string b64Data) {
 
     std::string b64String = std::string(b64Data);
         //std::cout << "incoming: " << b64String << endl;
@@ -95,9 +93,14 @@ std::vector<unsigned char> DisseminationVehicle::decodeBeacon(std::string b64Dat
             std::cout << "dump: " << json.dump() << endl;
             std::string type = json.at("gtg_type");
             if(type == "GTG_PSEUD"){
-                return json.at("gtg_pseud");
+
+                std::vector<unsigned char> pseudVect = json.at("gtg_pseud");
+                neighbours->newNeighbour(pseudVect, simTime());
+
             } else if (type == "GTG_SHARE"){
-                return json.at("gtg_share");
+
+                std::vector<unsigned char> share = json.at("gtg_share");
+                //todo save share and send receipt
             }
 
         } catch (const json::parse_error& e){
@@ -109,7 +112,7 @@ std::vector<unsigned char> DisseminationVehicle::decodeBeacon(std::string b64Dat
             std::cout << "ex:" << e.what() << endl;
         }
 
-        throw "does not decode into message";
+        //throw "does not decode into message";
 
 }
 
@@ -163,8 +166,6 @@ void DisseminationVehicle::sendBeacon(){
         pseud = disseminated.front().getPseud().getPubKey();
 
     }
-
-
 
     json cborStruct;
     cborStruct["gtg_type"] = "GTG_PSEUD";
