@@ -142,42 +142,7 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
                    break;
                }
                case SEND_SHARES_SELF_MSG: {
-                   //send shares if needed
-                   simtime_t currentEpoch = simTime() / pseudPeriod;
-
-                   if (currentEpoch > sentForEpoch) {
-
-                       std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
-
-
-                       for(std::vector<std::vector<unsigned char>>::iterator it = candidates.begin(); it != candidates.end(); ++it) {
-
-                           try{
-
-                               std::vector<unsigned char> candidateV = (*it);
-                               std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
-                               Share share = disseminating->getNextShare(candidateS);
-                               std::vector<unsigned char> tokenPrivKey;
-                               std::vector<unsigned char> recieverPubKey;
-                               Crypto crypto;
-                               std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
-                               sendShare(encryptedShare);
-
-                           } catch (DepletedSharePoolException& e) {
-
-                               //we are finished with this token
-                               disseminated.push(*disseminating.get());
-                               const std::vector<uint8_t> ltid = intToArr(getId() - 1);
-                               disseminating.reset(new Token(ltid, numShares, numReconstruct));
-
-                           } catch (DoubleShareException& e) {
-
-                               //try next neighbour
-                               continue;
-
-                           }
-                       }
-                   }
+                   sendShares();
                    scheduleAt(simTime() + shareSendInterval, shareMsg);
                    break;
                }
@@ -193,6 +158,45 @@ void DisseminationVehicle::sendGTGMessage(std::string msg){
     populateWSM(wsm);
     wsm->setWsmData(msg.c_str());
     sendDown(wsm);
+}
+
+void DisseminationVehicle::sendShares(){
+    simtime_t currentEpoch = simTime() / pseudPeriod;
+
+    //send shares if needed
+    if (currentEpoch > sentForEpoch) {
+
+        std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
+
+
+        for(std::vector<std::vector<unsigned char>>::iterator it = candidates.begin(); it != candidates.end(); ++it) {
+
+            try{
+
+                std::vector<unsigned char> candidateV = (*it);
+                std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
+                Share share = disseminating->getNextShare(candidateS);
+                std::vector<unsigned char> tokenPrivKey;
+                std::vector<unsigned char> recieverPubKey;
+                Crypto crypto;
+                std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
+                sendShare(encryptedShare);
+
+            } catch (DepletedSharePoolException& e) {
+
+                //we are finished with this token
+                disseminated.push(*disseminating.get());
+                const std::vector<uint8_t> ltid = intToArr(getId() - 1);
+                disseminating.reset(new Token(ltid, numShares, numReconstruct));
+
+            } catch (DoubleShareException& e) {
+
+                //try next neighbour
+                continue;
+
+            }
+        }
+    }
 }
 
 void DisseminationVehicle::sendBeacon(){
