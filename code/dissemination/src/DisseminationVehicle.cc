@@ -23,9 +23,8 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include <nlohmann/json.hpp>
+
 #include "base64.h"
-using json = nlohmann::json;
 using std::vector;
 
 Define_Module(DisseminationVehicle);
@@ -153,13 +152,6 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
         }
 }
 
-void DisseminationVehicle::sendGTGMessage(std::string msg){
-    BasicSafetyMessage* wsm = new BasicSafetyMessage();
-    populateWSM(wsm);
-    wsm->setWsmData(msg.c_str());
-    sendDown(wsm);
-}
-
 void DisseminationVehicle::sendShares(){
     simtime_t currentEpoch = simTime() / pseudPeriod;
 
@@ -199,6 +191,19 @@ void DisseminationVehicle::sendShares(){
     }
 }
 
+void DisseminationVehicle::sendGTGMessage(json cborStruct){
+
+    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
+    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
+    //todo consider using sodium bin2hex instead of base64
+    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
+
+    BasicSafetyMessage* wsm = new BasicSafetyMessage();
+    populateWSM(wsm);
+    wsm->setWsmData(b64.c_str());
+    sendDown(wsm);
+}
+
 void DisseminationVehicle::sendBeacon(){
 
     std::vector<unsigned char> pseud;
@@ -219,12 +224,7 @@ void DisseminationVehicle::sendBeacon(){
     json cborStruct;
     cborStruct["gtg_type"] = "GTG_PSEUD";
     cborStruct["gtg_pseud"] = pseud;
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
-
-    sendGTGMessage(b64);
+    sendGTGMessage(cborStruct);
 
 }
 
@@ -234,13 +234,7 @@ void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
     json cborStruct;
     cborStruct["gtg_type"] = "GTG_SHARE";
     cborStruct["gtg_share"] = share;
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
-
-    std::cout << "sencing share" << b64 << endl;
-    sendGTGMessage(b64);
+    sendGTGMessage(cborStruct);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {

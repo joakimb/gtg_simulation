@@ -27,6 +27,8 @@
 #include "Token.h"
 #include "PseudCred.h"
 #include "Crypto.h"
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 #define BEACON_SELF_MSG 1000
 #define SEND_SHARES_SELF_MSG 1001
@@ -50,7 +52,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         void sendBeacon();
         void sendShares();
         void sendShare(std::vector<unsigned char> share);
-        void sendGTGMessage(std::string msg);
+        void sendGTGMessage(json json);
 	    std::vector<uint8_t> intToArr(int i);
 	    void decodeBeacon(std::string b64Data);
 
