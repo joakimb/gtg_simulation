@@ -23,8 +23,8 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-
 #include "base64.h"
+
 using std::vector;
 
 Define_Module(DisseminationVehicle);
@@ -191,25 +191,15 @@ void DisseminationVehicle::sendShares(){
     }
 }
 
-void DisseminationVehicle::sendGTGMessage(json cborStruct){
+void DisseminationVehicle::sendGTGMessage(GTGMessage msg){
 
-    std::string encoded = encodeStruct(cborStruct);
+    std::string encoded = msg.getEncoded();
 
     BasicSafetyMessage* wsm = new BasicSafetyMessage();
     populateWSM(wsm);
     wsm->setWsmData(encoded.c_str());
     sendDown(wsm);
 }
-
-std::string DisseminationVehicle::encodeStruct(json cborStruct){
-
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    return base64_encode(cborMsgChar, cborMsg.size());
-}
-
-
 
 void DisseminationVehicle::sendBeacon(){
 
@@ -228,20 +218,16 @@ void DisseminationVehicle::sendBeacon(){
 
     }
 
-    json cborStruct;
-    cborStruct["gtg_type"] = "GTG_PSEUD";
-    cborStruct["gtg_pseud"] = pseud;
-    sendGTGMessage(cborStruct);
+    GTGMessage msg (GTG_MSG_TYPE_PSEUD,pseud);
+    sendGTGMessage(msg);
 
 }
 
 void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
 
     std::cout << "SENDSHARE" << endl;
-    json cborStruct;
-    cborStruct["gtg_type"] = "GTG_SHARE";
-    cborStruct["gtg_share"] = share;
-    sendGTGMessage(cborStruct);
+    GTGMessage msg (GTG_MSG_TYPE_SHARE,share);
+    sendGTGMessage(msg);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
