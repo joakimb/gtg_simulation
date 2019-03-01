@@ -90,3 +90,18 @@ TEST_CASE("AddSeveralNeighboursTest"){
 	REQUIRE(neighbours.size() == 3);
 }
 
+TEST_CASE("DuplicatelNeighboursIgnoredTest"){
+	std::string carAS = "carA";
+    std::vector<unsigned char> carA (carAS.begin(), carAS.end());
+
+	std::string carBS = "carB";
+    std::vector<unsigned char> carB (carBS.begin(), carBS.end());
+
+	NeighbourMemory mem (10);
+	mem.newNeighbour(carA,1);
+	mem.newNeighbour(carB,1);
+	mem.newNeighbour(carA,1);
+	std::vector<std::vector<unsigned char>> neighbours = mem.getNeighbours();
+	REQUIRE(neighbours.size() == 2);
+}
+
