@@ -42,3 +42,21 @@ TEST_CASE("ShareReturnsCorrectTypeTest"){
 	ShareMessage msg (share);
     REQUIRE(msg.getType() == "GTG_SHARE");
 }
+
+TEST_CASE("ShareMessageEncodesCorrectlyTest"){
+
+	std::string shareString = "dummyshare";
+    std::vector<unsigned char> share (shareString.begin(), shareString.end());
+
+	ShareMessage msg (share);
+	std::string encodedMessage = msg.getEncoded();
+
+    std::string cborData = base64_decode(encodedMessage);
+	json json = json::from_cbor(cborData);
+    std::string type = json.at("gtg_type");
+    std::vector<unsigned char> shareVectDecoded = json.at("gtg_share");
+    std::string shareStringDecoded(shareVectDecoded.begin(), shareVectDecoded.end());
+
+    REQUIRE(type == "GTG_SHARE");
+    REQUIRE(shareStringDecoded == shareString);
+}
