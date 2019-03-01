@@ -105,3 +105,21 @@ TEST_CASE("DuplicatelNeighboursIgnoredTest"){
 	REQUIRE(neighbours.size() == 2);
 }
 
+TEST_CASE("DeleteExpiredNeighboursTest"){
+	std::string carAS = "carA";
+    std::vector<unsigned char> carA (carAS.begin(), carAS.end());
+
+	std::string carBS = "carB";
+    std::vector<unsigned char> carB (carBS.begin(), carBS.end());
+
+	std::string carCS = "carC";
+    std::vector<unsigned char> carC (carCS.begin(), carCS.end());
+
+	NeighbourMemory mem (10);
+	mem.newNeighbour(carA,1);
+	mem.newNeighbour(carB,5);
+	mem.newNeighbour(carC,10);
+	mem.deleteExpired(16);
+	std::vector<std::vector<unsigned char>> neighbours = mem.getNeighbours();
+	REQUIRE(neighbours.size() == 1);
+}
