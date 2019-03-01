@@ -14,3 +14,12 @@ TEST_CASE("PseudReturnsCorrectTypeTest"){
 	PseudMessage msg (pseud);
     REQUIRE(msg.getType() == "GTG_PSEUD");
 }
+
+TEST_CASE("ShareReturnsCorrectTypeTest"){
+
+	std::string shareString = "dummypseud";
+    std::vector<unsigned char> share (shareString.begin(), shareString.end());
+
+	ShareMessage msg (share);
+    REQUIRE(msg.getType() == "GTG_SHARE");
+}
