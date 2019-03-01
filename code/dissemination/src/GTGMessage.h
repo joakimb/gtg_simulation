@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "veins/modules/messages/BasicSafetyMessage_m.h"
 #include <vector>
 #include <string>
 #include <nlohmann/json.hpp>

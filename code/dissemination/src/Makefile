@@ -39,7 +39,8 @@ OBJS = \
     $O/PseudCred.o \
     $O/PseudMessage.o \
     $O/ShareMessage.o \
-    $O/Token.o
+    $O/Token.o \
+    $O/work/test/test.o
 
 # Message files
 MSGFILES =
