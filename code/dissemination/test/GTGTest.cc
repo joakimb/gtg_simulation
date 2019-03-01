@@ -72,6 +72,19 @@ TEST_CASE("AddOneNeighbourTest"){
 	REQUIRE(neighbours.size() == 1);
 }
 
+TEST_CASE("NeighboursReturnedAreCorrectTest"){
+	std::string carAS = "carA";
+    std::vector<unsigned char> carA (carAS.begin(), carAS.end());
+
+	NeighbourMemory mem (10);
+	mem.newNeighbour(carA,1);
+	std::vector<std::vector<unsigned char>> neighbours = mem.getNeighbours();
+	std::vector<unsigned char> neighbourV = neighbours.front();
+    std::string neighbour (neighbourV.begin(), neighbourV.end());
+
+	REQUIRE(neighbour == carAS);
+}
+
 TEST_CASE("AddSeveralNeighboursTest"){
 	std::string carAS = "carA";
     std::vector<unsigned char> carA (carAS.begin(), carAS.end());
