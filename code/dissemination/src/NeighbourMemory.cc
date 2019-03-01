@@ -11,16 +11,15 @@
 #include <sstream>
 #include <iterator>
 
-using omnetpp::simtime_t;
 using std::vector;
 using std::list;
 
-NeighbourMemory::NeighbourMemory(simtime_t cutOff) :
+NeighbourMemory::NeighbourMemory(int cutOff) :
     cutOff(cutOff),
     neighbours () {
 }
 
-void NeighbourMemory::deleteExpired(simtime_t time){
+void NeighbourMemory::deleteExpired(int time){
 
     neighbours.remove_if( [&](const neighbour_node& neighbour) {
         auto delta = time - neighbour.time;
@@ -43,7 +42,7 @@ void NeighbourMemory::deleteDuplicates(std::vector<unsigned char> pseud){
 
 }
 
-void NeighbourMemory::newNeighbour(std::vector<unsigned char> pseud, simtime_t time) {
+void NeighbourMemory::newNeighbour(std::vector<unsigned char> pseud, int time) {
 
     deleteExpired(time);
     deleteDuplicates(pseud);

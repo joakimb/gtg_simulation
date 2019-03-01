@@ -1,2 +1,3 @@
-#g++ -std=c++11 -Wall -ICatch2/catch.h -I../src/ChannelService.h -o ChannelServiceTest ChannelServiceTest.cc ../src/ChannelService.cc && ./ChannelServiceTest --success
-g++ -std=c++11 -Wall -ICatch2/catch.h -I../../json/single_include -I../src -o GTGTest GTGTest.cc ../src/PseudMessage.cc ../src/ShareMessage.cc ../src/GTGMessage.cc ../src/base64.cc && ./GTGTest --success
+g++ -std=c++11 -Wall -ICatch2/catch.h -I../../json/single_include -I../src -o GTGTest GTGTest.cc ../src/PseudMessage.cc ../src/ShareMessage.cc ../src/GTGMessage.cc ../src/base64.cc  ../src/NeighbourMemory.cc && ./GTGTest --success
+#/usr/local/Cellar/gcc/8.3.0/bin/g++-8 -std=c++11 -Wall -ICatch2/include -I../../json/single_include -I../../sss -I../src -o GTGTest GTGTest.cc ../src/PseudMessage.cc ../src/ShareMessage.cc ../src/GTGMessage.cc ../src/base64.cc ../src/Token.cc -L../../sss/ -lsss && ./GTGTest --success
+#g++ -std=c++11 -Wall -ICatch2/catch.h -I../../json/single_include -I../../sss -I../src -o GTGTest GTGTest.cc ../src/PseudMessage.cc ../src/ShareMessage.cc ../src/GTGMessage.cc ../src/base64.cc ../src/Token.cc -L../../sss/ -lsss && ./GTGTest --success

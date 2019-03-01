@@ -4,6 +4,7 @@
 #include "../src/PseudMessage.h"
 #include "../src/ShareMessage.h"
 #include "../src/base64.h"
+#include "../src/NeighbourMemory.h"
 #include <string>
 #include <vector>
 
@@ -60,3 +61,16 @@ TEST_CASE("ShareMessageEncodesCorrectlyTest"){
     REQUIRE(type == "GTG_SHARE");
     REQUIRE(shareStringDecoded == shareString);
 }
+
+TEST_CASE("AddOneNeighbourTest"){
+	std::string carAS = "carA";
+    std::vector<unsigned char> carA (carAS.begin(), carAS.end());
+
+	NeighbourMemory mem (10);
+	mem.newNeighbour(carA,1);
+	std::vector<std::vector<unsigned char>> neighbours = mem.getNeighbours();
+	REQUIRE(neighbours.size() == 1);
+}
+
+
+
