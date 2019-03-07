@@ -34,8 +34,11 @@ OBJS = \
     $O/base64.o \
     $O/Crypto.o \
     $O/DisseminationVehicle.o \
+    $O/GTGMessage.o \
     $O/NeighbourMemory.o \
     $O/PseudCred.o \
+    $O/PseudMessage.o \
+    $O/ShareMessage.o \
     $O/Token.o
 
 # Message files

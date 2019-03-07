@@ -23,9 +23,10 @@
 #include <vector>
 #include <sstream>
 #include <iterator>
-#include <nlohmann/json.hpp>
 #include "base64.h"
-using json = nlohmann::json;
+#include "ShareMessage.h"
+#include "PseudMessage.h"
+
 using std::vector;
 
 Define_Module(DisseminationVehicle);
@@ -54,6 +55,11 @@ void DisseminationVehicle::initialize(int stage) {
         beaconMsg = new cMessage("beaconmsg", BEACON_SELF_MSG);
         beaconOffset = dblrand() * par("pubKeyBeaconInterval").doubleValue() ;
         scheduleAt(simTime() + beaconOffset, beaconMsg);
+
+        //schedule share sending
+        shareMsg = new cMessage("sharemsg", SEND_SHARES_SELF_MSG);
+        shareSendInterval = dblrand() * par("shareSendInterval").doubleValue() ;
+        scheduleAt(simTime() + shareSendInterval, shareMsg);
     }
 }
 
@@ -136,6 +142,11 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
                    scheduleAt(simTime() + beaconOffset, beaconMsg);
                    break;
                }
+               case SEND_SHARES_SELF_MSG: {
+                   sendShares();
+                   scheduleAt(simTime() + shareSendInterval, shareMsg);
+                   break;
+               }
                default: {
                     BaseWaveApplLayer::handleSelfMsg(msg);
                     break;
@@ -143,69 +154,10 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
         }
 }
 
-void DisseminationVehicle::sendBSM(std::string msg){
-    BasicSafetyMessage* wsm = new BasicSafetyMessage();
-    populateWSM(wsm);
-    wsm->setWsmData(msg.c_str());
-    sendDown(wsm);
-}
-
-void DisseminationVehicle::sendBeacon(){
-
-    std::vector<unsigned char> pseud;
-
-    if (disseminated.empty()){
-
-        //TODO log statistic about NOT having access to disseminated token
-        assert(neighbours);
-        pseud = disseminating->getPseud().getPubKey();
-
-    } else {
-
-        //TODO log statistic about having access to disseminated token
-        pseud = disseminated.front().getPseud().getPubKey();
-
-    }
-
-    json cborStruct;
-    cborStruct["gtg_type"] = "GTG_PSEUD";
-    cborStruct["gtg_pseud"] = pseud;
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
-
-    sendBSM(b64);
-
-}
-
-void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
-
-    json cborStruct;
-    cborStruct["gtg_type"] = "GTG_SHARE";
-    cborStruct["gtg_share"] = share;
-    std::vector<std::uint8_t> cborMsg = json::to_cbor(cborStruct);
-    const unsigned char* cborMsgChar = reinterpret_cast<const unsigned char*>(cborMsg.data());//.c_str();
-    //todo consider using sodium bin2hex instead of base64
-    std::string b64 = base64_encode(cborMsgChar, cborMsg.size());
-
-    std::cout << "sencing share" << b64 << endl;
-    sendBSM(b64);
-}
-
-void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
-
-    BaseWaveApplLayer::handlePositionUpdate(obj);
-
-    assert(neighbours);
-
-    //record statistics
-    neighbours->deleteExpired(simTime());
-    emit(sendSharesSignal, neighbours->getNeighbours().size());
-
-    //send shares if needed
+void DisseminationVehicle::sendShares(){
     simtime_t currentEpoch = simTime() / pseudPeriod;
 
+    //send shares if needed
     if (currentEpoch > sentForEpoch) {
 
         std::vector<std::vector<unsigned char>> candidates = neighbours->getNeighbours();
@@ -238,14 +190,57 @@ void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
 
             }
         }
-        //Share share = disseminating->getNextShare();
     }
-//    Token token{Token::genRandomPseud(), 5,4};
-//    for (int i = 0; i < 5; i++){
-//        std::cout << "share: " << token.getNextShare().data() << "\n";
-//    }
+}
 
+void DisseminationVehicle::sendGTGMessage(GTGMessage& msg){
 
+    std::string encoded = msg.getEncoded();
+
+    BasicSafetyMessage* wsm = new BasicSafetyMessage();
+    populateWSM(wsm);
+    wsm->setWsmData(encoded.c_str());
+    sendDown(wsm);
+}
+
+void DisseminationVehicle::sendBeacon(){
+
+    std::vector<unsigned char> pseud;
+
+    if (disseminated.empty()){
+
+        //TODO log statistic about NOT having access to disseminated token
+        assert(neighbours);
+        pseud = disseminating->getPseud().getPubKey();
+
+    } else {
+
+        //TODO log statistic about having access to disseminated token
+        pseud = disseminated.front().getPseud().getPubKey();
+
+    }
+
+    PseudMessage msg (pseud);
+    sendGTGMessage(msg);
+
+}
+
+void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
+
+    std::cout << "SENDSHARE" << endl;
+    ShareMessage msg (share);
+    sendGTGMessage(msg);
+}
+
+void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
+
+    BaseWaveApplLayer::handlePositionUpdate(obj);
+
+    assert(neighbours);
+
+    //record statistics
+    neighbours->deleteExpired(simTime());
+    emit(sendSharesSignal, neighbours->getNeighbours().size());
 
 }
 

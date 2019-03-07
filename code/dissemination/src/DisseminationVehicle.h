@@ -27,8 +27,10 @@
 #include "Token.h"
 #include "PseudCred.h"
 #include "Crypto.h"
+#include "GTGMessage.h"
 
 #define BEACON_SELF_MSG 1000
+#define SEND_SHARES_SELF_MSG 1001
 
 
 class DisseminationVehicle : public BaseWaveApplLayer {
@@ -47,12 +49,11 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 
 	private:
         void sendBeacon();
-        void sendBSM(std::string msg);
+        void sendShares();
         void sendShare(std::vector<unsigned char> share);
+        void sendGTGMessage(GTGMessage& msg);
 	    std::vector<uint8_t> intToArr(int i);
 	    void decodeBeacon(std::string b64Data);
-
-
 
 	private:
 		simtime_t sentForEpoch = -1;
@@ -65,6 +66,8 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         std::unique_ptr<Token> disseminating;
         std::queue<Token> disseminated;
         simtime_t beaconOffset;
+        simtime_t shareSendInterval;
         cMessage* beaconMsg;
+        cMessage* shareMsg;
 };
 
