@@ -36,7 +36,7 @@ void DisseminationVehicle::initialize(int stage) {
     if (stage == 0) {
         currentSubscribedServiceId = -1;
 
-        sendSharesSignal = registerSignal("sendshares");
+        numNeighboursSignal = registerSignal("numneighbourssignal");
 
         //read config file values
         numShares = par("numShares").intValue();
@@ -60,6 +60,11 @@ void DisseminationVehicle::initialize(int stage) {
         shareMsg = new cMessage("sharemsg", SEND_SHARES_SELF_MSG);
         shareSendInterval = dblrand() * par("shareSendInterval").doubleValue() ;
         scheduleAt(simTime() + shareSendInterval, shareMsg);
+
+        //schedule statistics recording
+        statMsg = new cMessage("statmsg", STATISTICS_MSG);
+        statRecInterval = par("statRecInterval").doubleValue() ;
+        scheduleAt(simTime() + statRecInterval, statMsg);
     }
 }
 
@@ -96,7 +101,7 @@ void DisseminationVehicle::decodeBeacon(std::string b64Data) {
         try {
 
             json json = json::from_cbor(cborData);
-            std::cout << "dump: " << json.dump() << endl;
+            //std::cout << "dump: " << json.dump() << endl;
             std::string type = json.at("gtg_type");
             if(type == "GTG_PSEUD"){
 
@@ -147,6 +152,11 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
                    scheduleAt(simTime() + shareSendInterval, shareMsg);
                    break;
                }
+               case STATISTICS_MSG: {
+                   recStats();
+                   scheduleAt(simTime() + statRecInterval, statMsg);
+                   break;
+                              }
                default: {
                     BaseWaveApplLayer::handleSelfMsg(msg);
                     break;
@@ -203,6 +213,14 @@ void DisseminationVehicle::sendGTGMessage(GTGMessage& msg){
     sendDown(wsm);
 }
 
+void DisseminationVehicle::recStats(){
+    //record statistics
+    //std::cout << "logging" << endl;
+    assert(neighbours);
+    neighbours->deleteExpired(simTime());
+    emit(numNeighboursSignal, neighbours->getNeighbours().size());
+}
+
 void DisseminationVehicle::sendBeacon(){
 
     std::vector<unsigned char> pseud;
@@ -227,20 +245,14 @@ void DisseminationVehicle::sendBeacon(){
 
 void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
 
-    std::cout << "SENDSHARE" << endl;
-    ShareMessage msg (share);
-    sendGTGMessage(msg);
+    //std::cout << "SENDSHARE" << endl;
+    //ShareMessage msg (share);
+    //sendGTGMessage(msg);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
 
     BaseWaveApplLayer::handlePositionUpdate(obj);
-
-    assert(neighbours);
-
-    //record statistics
-    neighbours->deleteExpired(simTime());
-    emit(sendSharesSignal, neighbours->getNeighbours().size());
 
 }
 

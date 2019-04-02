@@ -41,8 +41,9 @@
  ../../veins/src/veins/modules/world/traci/trafficLight/TraCITrafficLightProgram.h \
  NeighbourMemory.h /omnet/omnetpp-5.4.1/include/omnetpp/simtime_t.h \
  Token.h PseudCred.h /workspace/sss/sss.h /workspace/sss/hazmat.h \
- /workspace/sss/tweetnacl.h Crypto.h \
- /workspace/json/single_include/nlohmann/json.hpp base64.h
+ /workspace/sss/tweetnacl.h Crypto.h GTGMessage.h \
+ /workspace/json/single_include/nlohmann/json.hpp base64.h ShareMessage.h \
+ PseudMessage.h
 
 DisseminationVehicle.h:
 
@@ -140,6 +141,12 @@ PseudCred.h:
 
 Crypto.h:
 
+GTGMessage.h:
+
 /workspace/json/single_include/nlohmann/json.hpp:
 
 base64.h:
+
+ShareMessage.h:
+
+PseudMessage.h:

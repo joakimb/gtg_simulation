@@ -31,7 +31,7 @@
 
 #define BEACON_SELF_MSG 1000
 #define SEND_SHARES_SELF_MSG 1001
-
+#define STATISTICS_MSG 1002
 
 class DisseminationVehicle : public BaseWaveApplLayer {
 	public:
@@ -50,6 +50,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 	private:
         void sendBeacon();
         void sendShares();
+        void recStats();
         void sendShare(std::vector<unsigned char> share);
         void sendGTGMessage(GTGMessage& msg);
 	    std::vector<uint8_t> intToArr(int i);
@@ -59,7 +60,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
 		simtime_t sentForEpoch = -1;
 		simtime_t pseudPeriod;
         std::unique_ptr<NeighbourMemory> neighbours;
-        simsignal_t sendSharesSignal;
+        simsignal_t numNeighboursSignal;
         simtime_t cutOff;
         int numShares;
         int numReconstruct;
@@ -67,7 +68,9 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         std::queue<Token> disseminated;
         simtime_t beaconOffset;
         simtime_t shareSendInterval;
+        simtime_t statRecInterval;
         cMessage* beaconMsg;
         cMessage* shareMsg;
+        cMessage* statMsg;
 };
 
