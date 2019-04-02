@@ -32,7 +32,7 @@ docker
 
     xhost +local:docker
     cd {project-dir}
-    docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach omsim
+    docker run --net=host --cap-add SYS_ADMIN --env DISPLAY=$DISPLAY --volume="$HOME/.Xauthority:/root/.Xauthority:rw" -v "${PWD}"/code:/workspace --detach --memory-swappiness=0 omsim
 
 When omnet opens, and you are prompted to select a workspace, select:
 
