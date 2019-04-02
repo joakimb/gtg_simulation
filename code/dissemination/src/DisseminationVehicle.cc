@@ -36,7 +36,7 @@ void DisseminationVehicle::initialize(int stage) {
     if (stage == 0) {
         currentSubscribedServiceId = -1;
 
-        numNeighboursSignal = registerSignal("numneighbourssignal");
+        numNeighboursSignal = registerSignal("numneighbours");
 
         //read config file values
         numShares = par("numShares").intValue();

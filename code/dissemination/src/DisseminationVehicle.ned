@@ -24,8 +24,8 @@ import org.car2x.veins.modules.application.ieee80211p.BaseWaveApplLayer;
 simple DisseminationVehicle extends BaseWaveApplLayer
 {
     @class(DisseminationVehicle);
-    @signal[sendshares](type="unsigned long");
-    @statistic[neighbours](title="neighbour count"; source="sendshares"; record=vector,stats; interpolationmode=none);
+    @signal[numneighbours](type="unsigned long");
+    @statistic[neighbours](title="neighbour count"; source="numneighbours"; record=vector,stats; interpolationmode=none);
     
     //parameters:
     int cutOff;
