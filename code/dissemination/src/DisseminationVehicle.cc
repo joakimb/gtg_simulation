@@ -221,7 +221,6 @@ void DisseminationVehicle::sendGTGMessage(GTGMessage& msg){
 
 void DisseminationVehicle::recStats(){
     //record statistics
-    //std::cout << "logging" << endl;
     assert(neighbours);
     neighbours->deleteExpired(simTime());
     emit(numNeighboursSignal, neighbours->getNeighbours().size());
@@ -256,8 +255,8 @@ void DisseminationVehicle::sendBeacon(){
 void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
 
     //std::cout << "SENDSHARE" << endl;
-    //ShareMessage msg (share);
-    //sendGTGMessage(msg);
+    ShareMessage msg (share);
+    sendGTGMessage(msg);
 }
 
 void DisseminationVehicle::handlePositionUpdate(cObject* obj) {
