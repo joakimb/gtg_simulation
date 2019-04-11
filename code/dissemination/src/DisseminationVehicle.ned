@@ -35,5 +35,7 @@ simple DisseminationVehicle extends BaseWaveApplLayer
     double pubKeyBeaconInterval;
     double shareSendInterval;
     double statRecInterval;
+    bool sendGTGBeacons;
+    bool sendGTGShares;
     //@display("i=block/app2");
 }

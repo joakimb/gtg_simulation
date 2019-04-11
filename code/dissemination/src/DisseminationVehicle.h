@@ -72,5 +72,7 @@ class DisseminationVehicle : public BaseWaveApplLayer {
         cMessage* beaconMsg;
         cMessage* shareMsg;
         cMessage* statMsg;
+        bool sendGTGBeacons;
+        bool sendGTGShares;
 };
 

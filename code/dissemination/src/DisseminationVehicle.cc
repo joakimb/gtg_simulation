@@ -43,6 +43,8 @@ void DisseminationVehicle::initialize(int stage) {
         numReconstruct = par("numReconstruct").intValue();
         pseudPeriod = par("pseudPeriod").intValue();
         cutOff = par("cutOff").intValue();
+        sendGTGBeacons = par("sendGTGBeacons").boolValue();
+        sendGTGShares = par("sendGTGShares").boolValue();
 
         //initialize neighbour memory
         neighbours.reset(new NeighbourMemory(cutOff));
@@ -165,6 +167,10 @@ void DisseminationVehicle::handleSelfMsg(cMessage* msg) {
 }
 
 void DisseminationVehicle::sendShares(){
+
+    if(!sendGTGShares){
+        return;
+    }
     simtime_t currentEpoch = simTime() / pseudPeriod;
 
     //send shares if needed
@@ -222,6 +228,10 @@ void DisseminationVehicle::recStats(){
 }
 
 void DisseminationVehicle::sendBeacon(){
+
+    if(!sendGTGBeacons){
+        return;
+    }
 
     std::vector<unsigned char> pseud;
 
