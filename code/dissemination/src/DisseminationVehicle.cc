@@ -187,10 +187,12 @@ void DisseminationVehicle::sendShares(){
                 std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
                 Share share = disseminating->getNextShare(candidateS);
                 std::vector<unsigned char> tokenPrivKey;
+                std::vector<unsigned char> tokenPubKey;
                 std::vector<unsigned char> recieverPubKey;
                 Crypto crypto;
                 std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
-                sendShare(encryptedShare);
+                std::vector<unsigned char> signature = crypto.signShare(share, tokenPrivKey);
+                sendShare(encryptedShare, signature, tokenPubKey);
 
             } catch (DepletedSharePoolException& e) {
 
@@ -252,8 +254,9 @@ void DisseminationVehicle::sendBeacon(){
 
 }
 
-void DisseminationVehicle::sendShare(std::vector<unsigned char> share){
+void DisseminationVehicle::sendShare(std::vector<unsigned char> share, std::vector<unsigned char> sign, std::vector<unsigned char> pubKey){
 
+    //todo send sign and pubkey too
     //std::cout << "SENDSHARE" << endl;
     ShareMessage msg (share);
     sendGTGMessage(msg);

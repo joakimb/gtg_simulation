@@ -22,6 +22,14 @@ std::vector<unsigned char> Crypto::encryptShare(Share share, std::vector<unsigne
     return v;
 }
 
+std::vector<unsigned char> Crypto::signShare(Share share, std::vector<unsigned char> myPrivKey){
+    //todo
+    std::string s = "DUMMYSIGN";
+    std::vector<unsigned char> v( s.begin(), s.end() );
+    return v;
+}
+
+
 
 
 
