@@ -107,6 +107,7 @@ void DisseminationVehicle::decodeBeacon(std::string b64Data) {
             std::string type = json.at("gtg_type");
             if(type == "GTG_PSEUD"){
 
+
                 std::vector<unsigned char> pseudVect = json.at("gtg_pseud");
                 neighbours->newNeighbour(pseudVect, simTime());
 
@@ -183,16 +184,14 @@ void DisseminationVehicle::sendShares(){
 
             try{
 
-                std::vector<unsigned char> candidateV = (*it);
-                std::string candidateS = base64_encode(candidateV.data(), candidateV.size());
+                std::vector<unsigned char> recieverPubKey = (*it);
+                std::string candidateS = base64_encode(recieverPubKey.data(), recieverPubKey.size());
                 Share share = disseminating->getNextShare(candidateS);
-                std::vector<unsigned char> tokenPrivKey;
-                std::vector<unsigned char> tokenPubKey;
-                std::vector<unsigned char> recieverPubKey;
                 Crypto crypto;
-                std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, tokenPrivKey, recieverPubKey);
-                std::vector<unsigned char> signature = crypto.signShare(share, tokenPrivKey);
-                sendShare(encryptedShare, signature, tokenPubKey);
+                std::cout << "encrypting share" << endl;
+                std::vector<unsigned char> encryptedShare = crypto.encryptShare(share, disseminating->getPseud().getPrivKey(), recieverPubKey);
+                std::vector<unsigned char> signedShare = crypto.signShare(encryptedShare, disseminating->getPseud().getPrivKey());
+                sendShare(signedShare, disseminating->getPseud().getPubKey());
 
             } catch (DepletedSharePoolException& e) {
 
@@ -254,11 +253,9 @@ void DisseminationVehicle::sendBeacon(){
 
 }
 
-void DisseminationVehicle::sendShare(std::vector<unsigned char> share, std::vector<unsigned char> sign, std::vector<unsigned char> pubKey){
+void DisseminationVehicle::sendShare(std::vector<unsigned char> signedShare, std::vector<unsigned char> pubKey){
 
-    //todo send sign and pubkey too
-    //std::cout << "SENDSHARE" << endl;
-    ShareMessage msg (share);
+    ShareMessage msg (pubKey,signedShare);
     sendGTGMessage(msg);
 }
 

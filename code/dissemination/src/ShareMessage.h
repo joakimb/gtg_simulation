@@ -10,8 +10,12 @@
 
 class ShareMessage : public ::GTGMessage {
 public:
-    ShareMessage(std::vector<unsigned char> data);
+    ShareMessage(std::vector<unsigned char> pubKey, std::vector<unsigned char> signedData);
     std::string getEncoded();
+private:
+    std::vector<unsigned char> pubKey;
+    std::vector<unsigned char> signedData;
+
 };
 
 

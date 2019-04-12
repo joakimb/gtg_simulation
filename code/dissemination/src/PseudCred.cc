@@ -18,3 +18,7 @@ PseudCred::PseudCred() {
 std::vector<unsigned char>PseudCred::getPubKey(){
     return std::vector<unsigned char>(pubKey, pubKey + sizeof(pubKey)/sizeof(*pubKey));
 }
+
+std::vector<unsigned char>PseudCred::getPrivKey(){
+    return std::vector<unsigned char>(privKey, privKey + sizeof(privKey)/sizeof(*privKey));
+}

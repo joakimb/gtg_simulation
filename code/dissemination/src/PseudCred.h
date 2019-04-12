@@ -14,6 +14,7 @@
 class PseudCred {
 public:
     PseudCred();
+    std::vector<unsigned char> getPrivKey();
     std::vector<unsigned char> getPubKey();
 private:
     unsigned char pubKey[crypto_box_PUBLICKEYBYTES];

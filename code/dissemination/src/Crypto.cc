@@ -6,6 +6,7 @@
  */
 
 #include "Crypto.h"
+#include <iostream>
 
 
 Crypto::Crypto() {
@@ -16,17 +17,28 @@ Crypto::Crypto() {
 }
 
 std::vector<unsigned char> Crypto::encryptShare(Share share, std::vector<unsigned char> myPrivKey, std::vector<unsigned char> recipientPubKey){
-    //todo
-    std::string s = "DUMMYMESSAGE";
-    std::vector<unsigned char> v( s.begin(), s.end() );
-    return v;
+
+    int ciphertext_len = crypto_box_MACBYTES + share.size();
+    unsigned char nonce[crypto_box_NONCEBYTES];
+    unsigned char ciphertext[ciphertext_len];
+    randombytes_buf(nonce, sizeof nonce);
+
+    if (crypto_box_easy(ciphertext, share.data(), share.size(), nonce, recipientPubKey.data(), myPrivKey.data()) != 0) {
+        throw "Error when encrypting share";
+    }
+
+    std::vector<unsigned char> c(ciphertext, ciphertext + ciphertext_len);
+    return c;
 }
 
-std::vector<unsigned char> Crypto::signShare(Share share, std::vector<unsigned char> myPrivKey){
-    //todo
-    std::string s = "DUMMYSIGN";
-    std::vector<unsigned char> v( s.begin(), s.end() );
-    return v;
+std::vector<unsigned char> Crypto::signShare(std::vector<unsigned char> msg, std::vector<unsigned char> myPrivKey){
+
+    unsigned char signed_message[crypto_sign_BYTES + msg.size()];
+    unsigned long long signed_message_len;
+    crypto_sign(signed_message, &signed_message_len, msg.data(), msg.size(), myPrivKey.data());
+
+    std::vector<unsigned char> c(signed_message, signed_message + signed_message_len);
+    return c;
 }
 
 

@@ -16,7 +16,7 @@ class Crypto {
 public:
     Crypto();
     std::vector<unsigned char> encryptShare(Share share, std::vector<unsigned char> myPrivKey, std::vector<unsigned char> recipientPubKey);
-    std::vector<unsigned char> signShare(Share share, std::vector<unsigned char> myPrivKey);
+    std::vector<unsigned char> signShare(std::vector<unsigned char> msg, std::vector<unsigned char> myPrivKey);
 };
 
 
